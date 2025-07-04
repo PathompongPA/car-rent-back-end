@@ -2,30 +2,28 @@ const { DataTypes } = require("sequelize");
 const { sequelize } = require("./init.model");
 
 const CAR = sequelize.define("cars", {
-    carId: {
+    id: {
         type: DataTypes.UUID(),
         primaryKey: true,
         defaultValue: DataTypes.UUIDV4()
     },
     carName: {
-        type: DataTypes.STRING()
+        type: DataTypes.STRING(),
+        unique: true,
+        allowNull: false
     },
 
     carDescription: {
         type: DataTypes.STRING(),
         defaultValue: "this is description demo"
     },
-    pricePerDay: {
-        type: DataTypes.INTEGER(),
-        defaultValue: 4000
+    carThumbnail: {
+        type: DataTypes.STRING(),
+        allowNull: false
     },
-    pricePerWeek: {
-        type: DataTypes.INTEGER(),
-        defaultValue: 3500
-    },
-    pricePerMonth: {
-        type: DataTypes.INTEGER(),
-        defaultValue: 3000
+    isDelete: {
+        type: DataTypes.BOOLEAN(),
+        defaultValue: false
     }
 })
 

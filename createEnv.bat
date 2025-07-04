@@ -1,5 +1,15 @@
 @echo off
 cls
+@echo off
+for /f "tokens=2 delims=:" %%A in ('ipconfig ^| findstr /R /C:"IPv4 Address.*192\.168\."') do (
+    set IP=%%A
+)
+for /f "tokens=* delims= " %%A in ("%IP%") do set IP=%%A
+
+echo SERVER_IP=%IP% >> .env
+
+echo Set .env with SERVER_IP=%IP%
+pause
 
 set /P db_port=Enter db port : 
 set /P pma_port=Enter php my admin port : 

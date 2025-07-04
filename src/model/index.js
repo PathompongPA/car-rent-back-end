@@ -8,18 +8,15 @@ const { PAYMENT } = require('./payment');
 const { CUSTOMER } = require('./customer');
 const { TYPE } = require('./type');
 
-BRAND.hasMany(CAR, { foreignKey: "brandId" })
-CAR.hasMany(IMG, { foreignKey: true })
+BRAND.hasMany(CAR)
+CAR.hasMany(IMG)
 CAR.hasMany(OFFER)
 CAR.hasMany(BOOKING)
 CUSTOMER.hasMany(BOOKING)
 BOOKING.hasMany(PAYMENT)
 TYPE.hasMany(PAYMENT)
 
-
-module.exports = {
-    initSql,
-    sequelize,
+let model = {
     BRAND,
     CAR,
     IMG,
@@ -27,5 +24,9 @@ module.exports = {
     BOOKING,
     CUSTOMER,
     PAYMENT,
-    TYPE
+    TYPE,
+    initSql,
+    sequelize
 }
+
+module.exports = model

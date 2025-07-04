@@ -2,14 +2,13 @@ const { DataTypes } = require("sequelize");
 const { sequelize } = require("./init.model");
 
 const IMG = sequelize.define('Img', {
-    imgId: {
+    id: {
         type: DataTypes.UUID(),
         primaryKey: true,
         defaultValue: DataTypes.UUIDV4()
     },
     name: {
-        type: DataTypes.UUID(),
-        defaultValue: DataTypes.UUIDV4()
+        type: DataTypes.STRING(100),
     },
 })
 

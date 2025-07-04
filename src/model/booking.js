@@ -2,7 +2,7 @@ const { DataTypes } = require("sequelize");
 const { sequelize } = require("./init.model");
 
 const BOOKING = sequelize.define("booking", {
-    bookingId: {
+    id: {
         type: DataTypes.UUID(),
         primaryKey: true,
         defaultValue: DataTypes.UUIDV4()
@@ -12,6 +12,10 @@ const BOOKING = sequelize.define("booking", {
     },
     checkOutDate: {
         type: DataTypes.DATE()
+    },
+    isDelete: {
+        type: DataTypes.BOOLEAN(),
+        defaultValue: false
     }
 })
 

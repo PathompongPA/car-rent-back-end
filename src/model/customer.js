@@ -2,7 +2,7 @@ const { DataTypes } = require("sequelize");
 const { sequelize } = require("./init.model");
 
 const CUSTOMER = sequelize.define("customers", {
-    customerId: {
+    id: {
         type: DataTypes.UUID(),
         primaryKey: true,
         defaultValue: DataTypes.UUIDV4()
@@ -24,7 +24,7 @@ const CUSTOMER = sequelize.define("customers", {
     },
     customerFacebook: {
         type: DataTypes.STRING()
-    }
+    },
 })
 
 module.exports = {

@@ -2,7 +2,7 @@ const { DataTypes } = require("sequelize");
 const { sequelize } = require("./init.model");
 
 const OFFER = sequelize.define("offers", {
-    offerId: {
+    id: {
         type: DataTypes.UUID(),
         primaryKey: true,
         defaultValue: DataTypes.UUIDV4()
@@ -12,6 +12,10 @@ const OFFER = sequelize.define("offers", {
     },
     offerAmountDay: {
         type: DataTypes.INTEGER()
+    },
+    isDelete: {
+        type: DataTypes.BOOLEAN(),
+        defaultValue: false
     }
 })
 

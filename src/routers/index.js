@@ -1,5 +1,13 @@
-const { carRouter } = require("./car.router")
+const express = require('express');
+const car = require("./car.router");
+const brand = require("./brand.router");
 
-module.exports = {
-    carRouter
+const v1 = express.Router()
+v1.use("/api/car", car)
+v1.use("/api/car/", brand)
+
+let router = {
+    v1
 }
+
+module.exports = router

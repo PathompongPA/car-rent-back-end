@@ -2,7 +2,7 @@ const { DataTypes } = require("sequelize");
 const { sequelize } = require("./init.model");
 
 const PAYMENT = sequelize.define("payments", {
-    paymentId: {
+    id: {
         type: DataTypes.UUID(),
         primaryKey: true,
         defaultValue: DataTypes.UUIDV4()
@@ -18,7 +18,7 @@ const PAYMENT = sequelize.define("payments", {
     },
     receiver: {
         type: DataTypes.STRING()
-    }
+    },
 })
 
 module.exports = {

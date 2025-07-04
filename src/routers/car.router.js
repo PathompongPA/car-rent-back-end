@@ -1,17 +1,36 @@
-const express = require('express');
-const { CAR, IMG } = require('../model');
-const carRouter = express.Router()
-carRouter.
-    get("",
-        /**
-         * @param {import('express').Request} req 
-         * @param {import('express').Response} res 
-         */
-        (req, res) => {
-            res.json()
-        })
+const middleware = require('../middlewares');
+const controller = require('../controllers');
 
 
-module.exports = {
-    carRouter
-}
+
+const car = require('express').Router()
+
+    .get(
+        "/",
+        controller.car.Read
+    )
+
+    .post(
+        "/",
+        middleware.fileUpload.fields([
+            { name: "carImage", },
+            { name: "carThumbnail" }
+        ]),
+        middleware.verifyUser,
+        controller.car.Create
+    )
+
+    .put(
+        "/",
+        middleware.fileUpload.fields([
+            { name: "carImage", },
+            { name: "carThumbnail" }
+        ]),
+        controller.car.Update
+    )
+
+    .delete("/",
+        controller.car.Delete
+    )
+
+module.exports = car

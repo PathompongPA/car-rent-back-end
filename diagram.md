@@ -56,7 +56,8 @@ img{
 }
 brand{
     brandId uuid pk
-    name string
+    brandName string
+    brandImg string
 }
 
 infoWeb{
