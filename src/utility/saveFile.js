@@ -12,16 +12,32 @@ const file = {
         return arr
     },
 
-    saveFile: (fileNames = [], files = []) => {
-        for (let index = 0; index < files.length; index++) {
+    saveFile: (_fileNames = [], _files = []) => {
+        if (Array.isArray(_fileNames) & Array.isArray(_files)) {
+            for (let index = 0; index < _files.length; index++) {
+                const uploadDir = path.join(__dirname, '../../uploads');
+                let file = _files[index]
+                let fileName = _fileNames[index]
+
+                if (!fs.existsSync(uploadDir)) {
+                    fs.mkdirSync(uploadDir, { recursive: true });
+                }
+                const filePath = path.join(uploadDir, fileName);
+
+                if (!file || !file.buffer) {
+                    throw new Error('File buffer is missing. Check multer storage type.');
+                }
+                fs.writeFileSync(filePath, file.buffer);
+            }
+        } else {
             const uploadDir = path.join(__dirname, '../../uploads');
-            let file = files[index]
-            let fileName = fileNames[index]
+            let file = _files[0]
+            let fileName = _fileNames
 
             if (!fs.existsSync(uploadDir)) {
                 fs.mkdirSync(uploadDir, { recursive: true });
             }
-            const filePath = path.join(uploadDir, fileNames[index]);
+            const filePath = path.join(uploadDir, fileName);
 
             if (!file || !file.buffer) {
                 throw new Error('File buffer is missing. Check multer storage type.');

@@ -1,8 +1,6 @@
 const middleware = require('../middlewares');
 const controller = require('../controllers');
 
-
-
 const car = require('express').Router()
 
     .get(
