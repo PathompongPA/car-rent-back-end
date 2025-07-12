@@ -30,6 +30,15 @@ const sequelize = new Sequelize(
         host: hostName,
         port: dbPort,
         dialect: "mysql",
+        host: hostName,
+        port: dbPort,
+        dialect: "mysql",
+        pool: {
+            max: 10,
+            min: 2,
+            acquire: 60000, // 60 วินาที
+            idle: 30000     // 30 วินาที
+        },
     },
 )
 

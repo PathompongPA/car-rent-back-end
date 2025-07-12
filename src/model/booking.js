@@ -8,10 +8,10 @@ const BOOKING = sequelize.define("booking", {
         defaultValue: DataTypes.UUIDV4()
     },
     checkInDate: {
-        type: DataTypes.DATE(),
+        type: DataTypes.DATEONLY(),
     },
     checkOutDate: {
-        type: DataTypes.DATE()
+        type: DataTypes.DATEONLY()
     },
     isDelete: {
         type: DataTypes.BOOLEAN(),

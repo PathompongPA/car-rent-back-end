@@ -9,10 +9,13 @@ const { CUSTOMER } = require('./customer');
 const { TYPE } = require('./type');
 
 BRAND.hasMany(CAR)
+CAR.belongsTo(BRAND)
 CAR.hasMany(IMG)
 CAR.hasMany(OFFER)
 CAR.hasMany(BOOKING)
 CUSTOMER.hasMany(BOOKING)
+BOOKING.belongsTo(CAR)
+BOOKING.belongsTo(CUSTOMER)
 BOOKING.hasMany(PAYMENT)
 TYPE.hasMany(PAYMENT)
 

@@ -1,5 +1,6 @@
 const model = require("../model");
 const utility = require("../utility");
+const dayjs = require('dayjs');
 
 let car = {
     create: async (req) => {
@@ -22,36 +23,59 @@ let car = {
                         utility.file.saveFile(images, carImage)
                     })
     },
-
     read: async (req) => {
-        return await
-            model.CAR.findAll({
-                order: [["carName", "ASC"]],
-                attributes: { exclude: ['createdAt', 'updatedAt'] },
-                include:
-                    [
-                        {
-                            model: model.IMG,
-                            attributes: ["name"]
-                        },
-                        {
-                            model: model.OFFER,
-                            attributes: ["id", "offerPrice", "offerAmountDay"],
-                            separate: true,
-                            order: [["offerAmountDay", "ASC"]]
-                        }
-                    ]
-            })
-                .then((res) => {
-                    const baseUrl = `http://${process.env.SERVER_IP}:9999/uploads/`;
-                    return res.map((item) => {
-                        const plainItem = item.get({ plain: true });
-                        return {
-                            ...plainItem, carThumbnail: baseUrl + JSON.parse(JSON.stringify(item.carThumbnail)), Imgs: item.Imgs.map((res) => baseUrl + JSON.parse(JSON.stringify(res.name)))
-                        }
-                    })
+        let car = await model.CAR.findAll({
+            order: [["carName", "ASC"]],
+            attributes: { exclude: ['createdAt', 'updatedAt'] },
+            include: [
+                {
+                    model: model.IMG,
+                    attributes: ["name"]
+                },
+                {
+                    model: model.OFFER,
+                    attributes: ["id", "offerPrice", "offerAmountDay"],
+                    separate: true,
+                    order: [["offerAmountDay", "ASC"]]
+                },
+                {
+                    model: model.BRAND,
+                    right: true
+                },
+                {
+                    model: model.BOOKING,
+                    attributes: ["checkInDate", "checkOutDate"]
                 }
-                )
+            ]
+        })
+            .then((res) => {
+                const baseUrl = `http://${process.env.SERVER_IP}:9999/uploads/`;
+                return res.map((item) => {
+                    const plainItem = item.get({ plain: true });
+                    return {
+                        ...plainItem,
+                        carThumbnail: baseUrl + item.carThumbnail,
+                        Imgs: item.Imgs.map((res) => baseUrl + res.name)
+                    };
+                });
+            });
+
+        car.forEach((res) => {
+            let arrayBooking = [];
+            res.bookings.forEach(({ checkInDate, checkOutDate }) => {
+                const checkIn = dayjs(checkInDate);
+                const checkOut = dayjs(checkOutDate);
+                let day = checkIn;
+                while (day.isBefore(checkOut) || day.isSame(checkOut)) {
+                    arrayBooking.push(day.format("YYYY-MM-DD"));
+                    day = day.add(1, "day");
+                }
+            });
+
+            res.bookedDates = arrayBooking;
+        });
+
+        return car;
     },
 
     update: async (req) => {
