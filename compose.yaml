@@ -7,6 +7,8 @@ services:
     environment:
       - MYSQL_ROOT_PASSWORD=${DB_PASSWORD}
       - MYSQL_DATABASE=${DB_NAME}
+    networks:
+      - backend
 
   phpmyadmin:
     image: phpmyadmin
@@ -17,19 +19,27 @@ services:
       - PMA_ARBITRARY=1
       - PMA_USER=${DB_USER}
       - PMA_PASSWORD=${DB_PASSWORD}
+    networks:
+      - backend
 
   app:
     build: .
     ports:
-      - ${APP_PORT}:9000
+      - ${APP_PORT}:9999
     restart: always
     environment:
       - DB_PORT=${DB_PORT}
       - PMA_PORT=${PMA_PORT}
-      - APP_PORT=${APP_PORT}
+      - APP_PORT=9999
       - DB_USER=${DB_USER}
       - DB_PASSWORD=${DB_PASSWORD}
       - DB_NAME=${DB_NAME}
       - DB_HOST_NAME_DEV=${DB_HOST_NAME_DEV}
       - DB_HOST_NAME_PRODUCTION=${DB_HOST_NAME_PRODUCTION}
       - MODE=production
+    networks:
+      - backend
+
+networks:
+  backend:
+    driver: bridge

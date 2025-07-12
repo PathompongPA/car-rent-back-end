@@ -6,24 +6,24 @@ let customer = {
     create: async (req) => {
         let { customerName, customerLastName, customerPhone } = { ...req.body };
         console.log(req.body)
-        // let { customerDriverLicense, customerIdCard, customerFacebook } = { ...req.files };
-        // let fileNameCustomerIdCard = await utility.file.genFileName(customerIdCard)
-        // let fileNameCustomerDriverLicense = await utility.file.genFileName(customerDriverLicense)
-        // let fileNameCustomerFacebook = await utility.file.genFileName(customerFacebook)
-        // let customer = {
-        //     customerName,
-        //     customerLastName,
-        //     customerPhone,
-        //     customerIdCard: fileNameCustomerIdCard[0],
-        //     customerDriverLicense: fileNameCustomerDriverLicense[0],
-        //     customerFacebook: fileNameCustomerFacebook[0]
-        // }
-        // return await model.CUSTOMER.create(customer).then((res) => {
-        //     console.log(res.customerDriverLicense)
-        //     utility.file.saveFile(res.customerDriverLicense, customerDriverLicense)
-        //     utility.file.saveFile(res.customerIdCard, customerIdCard)
-        //     utility.file.saveFile(res.customerFacebook, customerFacebook)
-        // })
+        let { customerDriverLicense, customerIdCard, customerFacebook } = { ...req.files };
+        let fileNameCustomerIdCard = await utility.file.genFileName(customerIdCard)
+        let fileNameCustomerDriverLicense = await utility.file.genFileName(customerDriverLicense)
+        let fileNameCustomerFacebook = await utility.file.genFileName(customerFacebook)
+        let customer = {
+            customerName,
+            customerLastName,
+            customerPhone,
+            customerIdCard: fileNameCustomerIdCard[0],
+            customerDriverLicense: fileNameCustomerDriverLicense[0],
+            customerFacebook: fileNameCustomerFacebook[0]
+        }
+        return await model.CUSTOMER.create(customer).then((res) => {
+            utility.file.saveFile(res.customerDriverLicense, customerDriverLicense)
+            utility.file.saveFile(res.customerIdCard, customerIdCard)
+            utility.file.saveFile(res.customerFacebook, customerFacebook)
+            return res
+        })
     },
 
     read: async (req) => {

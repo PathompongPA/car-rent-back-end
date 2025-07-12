@@ -1,24 +1,25 @@
 const model = require("../model")
 const utility = require("../utility")
 const dayjs = require('dayjs');
+const customer = require("./customer.service");
 
 const booking = {
 
     create: async (req) => {
-        console.log("POST", req.body)
-
-        const files = req.files
-
+        // const files = req.files
+        // const { slip } = files;
         let body = { ...req.body }
-        let isOldCustomer = body.customerId === undefined
-        console.log(isOldCustomer)
-        // let filenames = await utility.file.genFileName(files)
-        // body.brandImg = filenames[0]
-        // return await model.BRAND.create(body).then((_res) => { utility.file.saveFile(filenames, files) })
-        await model.BOOKING.create(body)
-        // await model.
+        console.log(body)
+        let isNewCustomer = body.customerId === ""
+        if (isNewCustomer) {
+            let newCustomer = await customer.create(req)
+            console.log("some", newCustomer.id)
+            body.customerId = newCustomer.id
+        }
+        console.log(body)
+        // let fileNameSlip = await utility.file.genFileName(slip)
+        return await model.BOOKING.create(body)
 
-        return ""
     },
     read: async (req) => {
         const carId = req.query.car;

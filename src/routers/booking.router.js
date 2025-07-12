@@ -8,8 +8,12 @@ const booking = require('express').Router()
     )
     .post(
         "/",
-        middleware.fileUpload.array('slip'),
-        middleware.verifyImage,
+        middleware.fileUpload.fields([
+            { name: "customerDriverLicense", },
+            { name: "customerIdCard" },
+            { name: "customerFacebook" },
+            { name: "slip" }
+        ]),
         controller.booking.Create
     )
     .put(

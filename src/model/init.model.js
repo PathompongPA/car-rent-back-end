@@ -10,8 +10,8 @@ let dbPort = process.env.DB_PORT
 
 console.log("mod :  ", process.env.MODE);
 if (process.env.MODE === "production") {
-    hostName = process.env.DB_HOST_NAME_PRODUCTION
-    dbName = process.env.DB_NAME
+    hostName = 'db'
+    // dbName = process.env.DB_NAME
     dbPort = 3306
 }
 

@@ -9,4 +9,4 @@ RUN npm install
 
 CMD [ "npm","run","production" ]
 
-EXPOSE 9000
+EXPOSE 9999
