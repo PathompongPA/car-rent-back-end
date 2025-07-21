@@ -9,46 +9,44 @@ const booking = {
         // const files = req.files
         // const { slip } = files;
         let body = { ...req.body }
-        console.log(body)
         let isNewCustomer = body.customerId === ""
         if (isNewCustomer) {
             let newCustomer = await customer.create(req)
             console.log("some", newCustomer.id)
             body.customerId = newCustomer.id
         }
-        console.log(body)
         // let fileNameSlip = await utility.file.genFileName(slip)
         return await model.BOOKING.create(body)
 
     },
     read: async (req) => {
-        const carId = req.query.car;
-        let arrayBooking = [];
-
         const bookings = await model.BOOKING.findAll({
-            where: {
-                isDelete: false,
-                carId,
-            },
-            attributes: ["checkInDate", "checkOutDate"]
+            attributes: { exclude: ['createdAt', "carId", "customerId"] },
+            include: [
+                {
+                    model: model.CAR,
+                    attributes: ['carName', "id"]
+
+                },
+                { model: model.CUSTOMER }
+            ],
+            where: {}
         });
 
-        bookings.forEach(({ checkInDate, checkOutDate }) => {
-            const checkIn = dayjs(checkInDate);
-            const checkOut = dayjs(checkOutDate);
+        // bookings.forEach(({ checkInDate, checkOutDate }) => {
+        //     const checkIn = dayjs(checkInDate);
+        //     const checkOut = dayjs(checkOutDate);
+        //     let d = checkIn;
+        //     while (d.isBefore(checkOut) || d.isSame(checkOut)) {
+        //         arrayBooking.push(d.format("YYYY-MM-DD"));
+        //         d = d.add(1, "day");
+        //     }
+        // });
 
-            let d = checkIn;
+        // arrayBooking = [...new Set(arrayBooking)];
 
-            while (d.isBefore(checkOut) || d.isSame(checkOut)) {
-                arrayBooking.push(d.format("YYYY-MM-DD"));
-                d = d.add(1, "day");
-            }
-        });
-
-        // unique
-        arrayBooking = [...new Set(arrayBooking)];
-
-        return { booking: arrayBooking };
+        return bookings
+        // { booking: arrayBooking };
     },
 
     update: async (req) => {

@@ -4,7 +4,7 @@
   "main": "index.js",
   "scripts": {
     "test": "echo \"Error: no test specified\" && exit 1",
-    "dev": "set MODE=dev && node --watch index.js",
+    "dev": "set MODE=production && node --watch index.js",
     "production": "set MODE=production && node --watch index.js"
   },
   "author": "",
@@ -12,6 +12,7 @@
   "description": "",
   "dependencies": {
     "@types/express": "^5.0.2",
+    "cookie-parser": "^1.4.7",
     "cors": "^2.8.5",
     "dayjs": "^1.11.13",
     "dotenv": "^16.5.0",

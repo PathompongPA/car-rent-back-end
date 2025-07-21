@@ -40,7 +40,6 @@ let car = {
                 },
                 {
                     model: model.BRAND,
-                    right: true
                 },
                 {
                     model: model.BOOKING,
@@ -50,7 +49,7 @@ let car = {
         })
             .then((res) => {
                 const baseUrl = `http://${process.env.SERVER_IP}:9999/uploads/`;
-                return res.map((item) => {
+                return res.length === 0 ? [] : res.map((item) => {
                     const plainItem = item.get({ plain: true });
                     return {
                         ...plainItem,

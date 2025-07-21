@@ -7,6 +7,7 @@ const { BOOKING } = require('./booking');
 const { PAYMENT } = require('./payment');
 const { CUSTOMER } = require('./customer');
 const { TYPE } = require('./type');
+const { CONTENT } = require('./content');
 
 BRAND.hasMany(CAR)
 CAR.belongsTo(BRAND)
@@ -29,7 +30,9 @@ let model = {
     PAYMENT,
     TYPE,
     initSql,
-    sequelize
+    sequelize,
+    CONTENT
+
 }
 
 module.exports = model

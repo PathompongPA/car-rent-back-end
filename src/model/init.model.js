@@ -10,9 +10,9 @@ let dbPort = process.env.DB_PORT
 
 console.log("mod :  ", process.env.MODE);
 if (process.env.MODE === "production") {
-    hostName = 'db'
-    // dbName = process.env.DB_NAME
-    dbPort = 3306
+    hostName = 'localhost'
+    dbName = process.env.DB_NAME
+    dbPort = dbPort
 }
 
 const initSql = mysql.createConnection(
@@ -27,9 +27,6 @@ const initSql = mysql.createConnection(
 const sequelize = new Sequelize(
     dbName, dbUser, dbPassword,
     {
-        host: hostName,
-        port: dbPort,
-        dialect: "mysql",
         host: hostName,
         port: dbPort,
         dialect: "mysql",
