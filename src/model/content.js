@@ -9,6 +9,17 @@ const CONTENT = sequelize.define("contents", {
     value: {
         type: DataTypes.JSON(),
         allowNull: false,
+        get() {
+            const raw = this.getDataValue('value');
+            try {
+                return JSON.parse(raw);
+            } catch (e) {
+                return raw;
+            }
+        },
+        set(val) {
+            this.setDataValue('value', JSON.stringify(val));
+        }
     }
 })
 

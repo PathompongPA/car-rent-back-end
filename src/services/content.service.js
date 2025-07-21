@@ -44,9 +44,10 @@ const content = {
         const baseUrl = `http://${process.env.SERVER_IP}:9999/uploads/`;
         return await model.CONTENT.findAll({ attributes: { exclude: ['createdAt', 'updatedAt'] }, }).then((item) => {
             let res = [...item]
-            console.log(JSON.parse(JSON.stringify(res)))
-            res[5].value.image = baseUrl + res[5].value.image
-            res[9].value.map((viewBoard, indexViewBoard) => { res[9].value[indexViewBoard] = baseUrl + viewBoard })
+            if (res[9].length > 0 & res[5].length > 0) {
+                res[5].value.image = baseUrl + res[5].value.image
+                res[9].value.map((viewBoard, indexViewBoard) => { res[9].value[indexViewBoard] = baseUrl + viewBoard })
+            }
             return res
         })
     },
