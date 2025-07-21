@@ -1,16 +1,18 @@
 require('dotenv').config()
+const dayjs = require('dayjs');
 const { app } = require("./app");
 const model = require("./model");
 
-let app_port = process.env.APP_PORT
+let app_port = process.env.APP_PORT || 3000
 app.listen(app_port, async () => {
     try {
         model.initSql.connect()
         await model.sequelize.sync()
-        console.log("port is : ", app_port);
-        const amountContetn = await model.CONTENT.count()
-        if (count === 0) {
-            await Role.bulkCreate([
+        console.log(`${dayjs()} : [Server] Server started ... `)
+        console.log(`${dayjs()} : [Server] Server On Port \x1b[36m ${app_port} \x1b[0m `);
+        const amountContent = await model.CONTENT.count()
+        if (amountContent === 0) {
+            await model.CONTENT.bulkCreate([
                 { "id": "contact.card", "value": [{ "list": [{ "link": "", "title": "" },], "title": "" },] },
                 { "id": "contact.title", "value": [{ "text": "" }] },
                 { "id": "footer.addess", "value": { "text": "" } },
@@ -22,11 +24,11 @@ app.listen(app_port, async () => {
                 { "id": "Qa.title", "value": { "text": "" } },
                 { "id": "viewBoard.image", "value": [] }
             ])
-            console.log('create json content in db')
+            console.log(`${dayjs()} : [Model Content] json content in db \x1b[32 created`)
         } else {
-            console.log('Table has json content in db, Skipping')
+            console.log(`${dayjs()} : [Model Content] Table has json content in db, \x1b[33mSkipping\x1b[0m`)
         }
     } catch (error) {
-        console.log(error);
+        console.log("\x1b[31" + error);
     }
 })
