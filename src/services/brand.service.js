@@ -20,7 +20,13 @@ const brand = {
             order: [["brandName", "ASC"]]
         })
             .then((res) => {
-                return res.map(genUrlImage)
+                return res.map(
+                    (item) => {
+                        const baseUrl = `http://${req.hostname}:9999/uploads`;
+                        const data = item.toJSON()
+                        return { ...data, brandImg: [`${baseUrl}/${data.brandImg}`] }
+                    }
+                )
             })
 
         return result
@@ -64,9 +70,3 @@ const brand = {
 }
 
 module.exports = brand
-
-function genUrlImage(item) {
-    const baseUrl = `http://${process.env.SERVER_IP}:9999/uploads`;
-    const data = item.toJSON()
-    return { ...data, brandImg: [`${baseUrl}/${data.brandImg}`] }
-}

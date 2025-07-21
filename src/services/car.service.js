@@ -48,7 +48,7 @@ let car = {
             ]
         })
             .then((res) => {
-                const baseUrl = `http://${process.env.SERVER_IP}:9999/uploads/`;
+                const baseUrl = `http://${req.hostname}:9999/uploads/`;
                 return res.length === 0 ? [] : res.map((item) => {
                     const plainItem = item.get({ plain: true });
                     return {

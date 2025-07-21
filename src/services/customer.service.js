@@ -33,7 +33,7 @@ let customer = {
                 attributes: { exclude: ['createdAt', 'updatedAt'] },
             })
                 .then((res) => {
-                    const baseUrl = `http://${process.env.SERVER_IP}:9999/uploads/`;
+                    const baseUrl = `http://${req.hostname}:9999/uploads/`;
                     return res.map((item) => {
                         const plainItem = item.get({ plain: true });
                         return {
