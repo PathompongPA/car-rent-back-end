@@ -16,7 +16,7 @@ const user = {
             const { password } = req.body;
             let response = { msg: "login fail, user or password wrong" }
             let userInDb = await model.USER.findOne({ where: { userName: "admin" } })
-            let isPasswordValid = validationPassword(userInDb.password, password)
+            let isPasswordValid = await validationPassword(userInDb.password, password)
             if (isPasswordValid) {
                 res.cookie("token", jwt.sign(userInDb.id, process.env.SECRET))
                 response.msg = "login success"
