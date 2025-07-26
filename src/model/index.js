@@ -8,6 +8,7 @@ const { PAYMENT } = require('./payment');
 const { CUSTOMER } = require('./customer');
 const { TYPE } = require('./type');
 const { CONTENT } = require('./content');
+const { USER } = require('./user');
 
 BRAND.hasMany(CAR)
 CAR.belongsTo(BRAND)
@@ -31,7 +32,8 @@ let model = {
     TYPE,
     initSql,
     sequelize,
-    CONTENT
+    CONTENT,
+    USER
 
 }
 

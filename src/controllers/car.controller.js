@@ -7,7 +7,11 @@ async function Create(req, res) {
         res.fail(error.message)
     }
 }
-
+/**
+ * 
+ * @param {import("express").Request} req 
+ * @param {*} res 
+ */
 async function Read(req, res) {
     try {
         res.success(await services.car.read(req))

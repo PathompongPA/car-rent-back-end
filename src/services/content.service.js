@@ -41,7 +41,6 @@ const content = {
 
     },
     read: async (req) => {
-        console.log(req.hostname)
         const baseUrl = `http://${req.hostname}:9999/uploads/`;
         return await model.CONTENT.findAll({ attributes: { exclude: ['createdAt', 'updatedAt'] }, }).then((item) => {
             let res = [...item]

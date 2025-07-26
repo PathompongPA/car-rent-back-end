@@ -10,9 +10,8 @@ const user = require('express').Router()
     )
 
     .post(
-        "/",
-        middleware.verifyUser,
-        controller.user.Create
+        "/login",
+        controller.user.Login
     )
 
     .put(

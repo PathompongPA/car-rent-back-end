@@ -1,7 +1,7 @@
 const { DataTypes } = require("sequelize");
 const { sequelize } = require("./init.model");
 
-const CUSTOMER = sequelize.define("user", {
+const USER = sequelize.define("user", {
     id: {
         type: DataTypes.UUID(),
         primaryKey: true,
@@ -15,10 +15,10 @@ const CUSTOMER = sequelize.define("user", {
     },
     last_login: {
         type: DataTypes.DATE(),
-        defaultValue: Date.now()
+        // defaultValue: DataTypes.DATE()
     }
 })
 
 module.exports = {
-    CUSTOMER
+    USER
 }

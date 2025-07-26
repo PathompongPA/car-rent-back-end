@@ -23,7 +23,10 @@ app.listen(app_port, async () => {
                 { "id": "Qa.card", "value": [{ "answer": "", "question": "" },] },
                 { "id": "Qa.title", "value": { "text": "" } },
                 { "id": "viewBoard.image", "value": [] }
-            ])
+            ], {
+                individualHooks: true
+
+            })
             console.log(`${dayjs()} : [Model Content] json content in db \x1b[32 created`)
         } else {
             console.log(`${dayjs()} : [Model Content] Table has json content in db, \x1b[33mSkipping\x1b[0m`)

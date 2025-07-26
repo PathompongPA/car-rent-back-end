@@ -1,11 +1,15 @@
 
 const services = require("../services");
+const jwt = require('jsonwebtoken');
 
 const user = {
 
-    Create: async (req, res) => {
+    Login: async (req, res) => {
         try {
-            res.success(await services.user.create(req))
+            const { isLogin, id } = await services.user.login(req);
+            isLogin && res.cookie("token", jwt.sign(id, "secret"))
+            res.success({ msg: isLogin ? "login success." : "login fail, user or password wrong." })
+            res.success(await services.user.login(req))
         } catch (error) {
             res.fail(error.message)
         }
