@@ -9,6 +9,7 @@ const content = require('express').Router()
     )
     .post(
         "/",
+        middleware.verifyUser,
         middleware.fileUpload.fields([
             { name: "viewBoard", },
             { name: "logo", },
@@ -17,10 +18,12 @@ const content = require('express').Router()
     )
     .put(
         "/",
+        middleware.verifyUser,
         controller.content.Update
     )
     .delete(
         "/",
+        middleware.verifyUser,
         controller.content.Delete
     )
 

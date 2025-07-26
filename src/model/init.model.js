@@ -8,7 +8,7 @@ let hostName = process.env.DB_HOST_NAME_DEV || "localhost"
 let dbName = process.env.DB_NAME || "demo"
 let dbPort = process.env.DB_PORT || 3306
 
-console.log("mod :  ", process.env.MODE);
+// console.log("mod :  ", process.env.MODE);
 // if (process.env.MODE === "production") {
 //     hostName = 'localhost'
 //     dbName = process.env.DB_NAME
@@ -36,6 +36,7 @@ const sequelize = new Sequelize(
             acquire: 60000, // 60 วินาที
             idle: 30000     // 30 วินาที
         },
+        logging: false
     },
 )
 

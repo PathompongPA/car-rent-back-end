@@ -4,11 +4,11 @@ const services = require("../services");
 const content = {
 
     Create: async (req, res) => {
-        // try {
-        res.success(await services.content.create(req))
-        // } catch (error) {
-        //     res.fail(error.message)
-        // }
+        try {
+            res.success(await services.content.create(req))
+        } catch (error) {
+            res.fail(error.message)
+        }
     },
 
     Read: async (req, res) => {

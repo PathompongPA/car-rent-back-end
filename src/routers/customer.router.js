@@ -10,17 +10,18 @@ const customer = require('express').Router()
 
     .post(
         "/",
+        middleware.verifyUser,
         middleware.fileUpload.fields([
             { name: "customerDriverLicense", },
             { name: "customerIdCard" },
             { name: "customerFacebook" }
         ]),
-        middleware.verifyUser,
         controller.customer.Create
     )
 
     .put(
         "/",
+        middleware.verifyUser,
         middleware.fileUpload.fields([
             { name: "customerDriverLicense", },
             { name: "customerIdCard" },
@@ -30,6 +31,7 @@ const customer = require('express').Router()
     )
 
     .delete("/",
+        middleware.verifyUser,
         controller.customer.Delete
     )
 

@@ -1,3 +1,4 @@
+require('dotenv');
 const jwt = require('jsonwebtoken');
 /**
  * @param {import("express").Request} req 
@@ -6,10 +7,10 @@ const jwt = require('jsonwebtoken');
  */
 function verifyUser(req, res, next) {
     try {
-        jwt.verify(req.cookies.token, "secret")
+        jwt.verify(req.cookies.token, process.env.SECRET)
         next()
     } catch (error) {
-        res.fail("Not allow,please login")
+        res.fail("Not allow,please login", 401)
     }
 }
 

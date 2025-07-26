@@ -6,10 +6,7 @@ const user = {
 
     Login: async (req, res) => {
         try {
-            const { isLogin, id } = await services.user.login(req);
-            isLogin && res.cookie("token", jwt.sign(id, "secret"))
-            res.success({ msg: isLogin ? "login success." : "login fail, user or password wrong." })
-            res.success(await services.user.login(req))
+            res.success(await services.user.login(req, res))
         } catch (error) {
             res.fail(error.message)
         }

@@ -8,6 +8,7 @@ const booking = require('express').Router()
     )
     .post(
         "/",
+        middleware.verifyUser,
         middleware.fileUpload.fields([
             { name: "customerDriverLicense", },
             { name: "customerIdCard" },
@@ -18,11 +19,13 @@ const booking = require('express').Router()
     )
     .put(
         "/",
+        middleware.verifyUser,
         middleware.fileUpload.array('brandImg'),
         controller.booking.Update
     )
     .delete(
         "/",
+        middleware.verifyUser,
         controller.booking.Delete
     )
 

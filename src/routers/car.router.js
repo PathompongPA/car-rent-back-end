@@ -10,16 +10,17 @@ const car = require('express').Router()
 
     .post(
         "/",
+        middleware.verifyUser,
         middleware.fileUpload.fields([
             { name: "carImage", },
             { name: "carThumbnail" }
         ]),
-        middleware.verifyUser,
         controller.car.Create
     )
 
     .put(
         "/",
+        middleware.verifyUser,
         middleware.fileUpload.fields([
             { name: "carImage", },
             { name: "carThumbnail" }
@@ -28,6 +29,7 @@ const car = require('express').Router()
     )
 
     .delete("/",
+        middleware.verifyUser,
         controller.car.Delete
     )
 
