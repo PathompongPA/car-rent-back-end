@@ -1,3 +1,4 @@
+require('dotenv');
 const model = require("../model")
 const utility = require("../utility")
 
@@ -22,7 +23,7 @@ const brand = {
             .then((res) => {
                 return res.map(
                     (item) => {
-                        const baseUrl = `http://${req.hostname}:9999/uploads`;
+                        const baseUrl = `http://${req.hostname}:${process.env.APP_PORT}/uploads`;
                         const data = item.toJSON()
                         return { ...data, brandImg: [`${baseUrl}/${data.brandImg}`] }
                     }

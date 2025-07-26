@@ -1,3 +1,4 @@
+require('dotenv');
 const model = require("../model");
 const utility = require("../utility");
 const dayjs = require('dayjs');
@@ -48,7 +49,7 @@ let car = {
             ]
         })
             .then((res) => {
-                const baseUrl = `http://${req.hostname}:9999/uploads/`;
+                const baseUrl = `http://${req.hostname}:${process.env.APP_PORT}/uploads/`;
                 return res.length === 0 ? [] : res.map((item) => {
                     const plainItem = item.get({ plain: true });
                     return {

@@ -1,7 +1,6 @@
+require('dotenv');
 const model = require("../model")
 const utility = require("../utility")
-const dayjs = require('dayjs');
-const customer = require("./customer.service");
 
 const content = {
 
@@ -41,7 +40,7 @@ const content = {
 
     },
     read: async (req) => {
-        const baseUrl = `http://${req.hostname}:9999/uploads/`;
+        const baseUrl = `http://${req.hostname}:${process.env.APP_PORT}/uploads/`;
         return await model.CONTENT.findAll({ attributes: { exclude: ['createdAt', 'updatedAt'] }, }).then((item) => {
             let res = [...item]
             if (res[9].length > 0 & res[5].length > 0) {
