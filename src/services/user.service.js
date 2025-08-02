@@ -18,7 +18,16 @@ const user = {
             let userInDb = await model.USER.findOne({ where: { userName: "admin" } })
             let isPasswordValid = await validationPassword(userInDb.password, password)
             if (isPasswordValid) {
-                res.cookie("token", jwt.sign(userInDb.id, process.env.SECRET))
+                res.cookie(
+                    "token",
+                    jwt.sign(userInDb.id, process.env.SECRET),
+                    {
+                        // httpOnly: true,
+                        // secure: true,
+                        sameSite: 'lax',
+                        maxAge: 1000 * 60 * 60 * 4,
+                    }
+                )
                 response.msg = "login success"
                 response.isLogin = true
             }
@@ -26,6 +35,9 @@ const user = {
         },
 
     create: async (req) => {
+        console.log(req.body.password)
+        req.body.password = await hashPassword(req.body.password)
+        return await model.USER.create(req.body)
     },
     read: async (req) => {
     },

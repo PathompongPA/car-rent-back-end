@@ -41,13 +41,18 @@ const content = {
     },
     read: async (req) => {
         const baseUrl = `http://${req.hostname}:${process.env.APP_PORT}/uploads/`;
-        return await model.CONTENT.findAll({ attributes: { exclude: ['createdAt', 'updatedAt'] }, }).then((item) => {
-            let res = [...item]
-            if (res[9].length > 0 & res[5].length > 0) {
-                res[5].value.image = baseUrl + res[5].value.image
-                res[9].value.map((viewBoard, indexViewBoard) => { res[9].value[indexViewBoard] = baseUrl + viewBoard })
+        return await model.CONTENT.findAll({ attributes: { exclude: ['createdAt', 'updatedAt'] } }).then((item) => {
+            let res = [...JSON.parse(JSON.stringify(item))];
+
+            // if (res[5]?.value?.image) {
+            res[5].value.image = baseUrl + res[5].value.image;
+            // }
+
+            if (Array.isArray(res[9]?.value)) {
+                res[9].value = res[9].value.map(viewBoard => baseUrl + viewBoard);
             }
-            return res
+
+            return res;
         })
     },
 

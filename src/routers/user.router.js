@@ -13,6 +13,10 @@ const user = require('express').Router()
         "/login",
         controller.user.Login
     )
+    .post(
+        "/create",
+        controller.user.Create
+    )
 
     .put(
         "/",

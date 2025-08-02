@@ -12,6 +12,13 @@ const user = {
         }
     },
 
+    Create: async (req, res) => {
+        try {
+            res.success(await services.user.create(req))
+        } catch (error) {
+            res.fail(error.message)
+        }
+    },
     Read: async (req, res) => {
         try {
             res.success(await services.user.read(req))

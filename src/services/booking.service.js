@@ -6,22 +6,22 @@ const customer = require("./customer.service");
 const booking = {
 
     create: async (req) => {
-        // const files = req.files
-        // const { slip } = files;
+        const { slip } = req.files;
         let body = { ...req.body }
         let isNewCustomer = body.customerId === ""
         if (isNewCustomer) {
             let newCustomer = await customer.create(req)
-            console.log("some", newCustomer.id)
             body.customerId = newCustomer.id
         }
-        // let fileNameSlip = await utility.file.genFileName(slip)
+        let fileNameSlip = await utility.file.genFileName(slip)
+        utility.file.saveFile(fileNameSlip, slip)
+        body.slip = fileNameSlip[0]
         return await model.BOOKING.create(body)
 
     },
     read: async (req) => {
         const bookings = await model.BOOKING.findAll({
-            attributes: { exclude: ['createdAt', "carId", "customerId"] },
+            attributes: { exclude: ["carId", "customerId"] },
             include: [
                 {
                     model: model.CAR,
@@ -30,8 +30,18 @@ const booking = {
                 },
                 { model: model.CUSTOMER }
             ],
-            where: {}
-        });
+        }).then(
+            (res) => {
+                const baseUrl = `http://${req.hostname}:${process.env.APP_PORT}/uploads/`;
+                return res.length === 0 ? [] : res.map((item) => {
+                    const plainItem = item.get({ plain: true });
+                    return {
+                        ...plainItem,
+                        slip: baseUrl + item.slip,
+                    };
+                });
+            }
+        )
 
         // bookings.forEach(({ checkInDate, checkOutDate }) => {
         //     const checkIn = dayjs(checkInDate);
@@ -77,12 +87,11 @@ const booking = {
     },
 
     delete: async (req) => {
-        console.log(req.body)
-        const result = await model.BRAND.findOne({ where: req.body })
-        let fileName = result.brandImg
-        utility.file.deleteFile(fileName)
+        console.log("body  : ", req.body)
+        const result = await model.BOOKING.findOne({ where: req.body })
+        // let fileName = result.brandImg
+        // utility.file.deleteFile(fileName)
         await result.destroy()
-
     }
 }
 

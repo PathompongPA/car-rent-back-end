@@ -13,6 +13,12 @@ const BOOKING = sequelize.define("booking", {
     checkOutDate: {
         type: DataTypes.DATEONLY()
     },
+    note: {
+        type: DataTypes.STRING()
+    },
+    slip: {
+        type: DataTypes.STRING()
+    },
     isDelete: {
         type: DataTypes.BOOLEAN(),
         defaultValue: false

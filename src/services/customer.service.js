@@ -5,7 +5,7 @@ const utility = require("../utility");
 let customer = {
     create: async (req) => {
         let { customerName, customerLastName, customerPhone } = { ...req.body };
-        console.log(req.body)
+        console.log("body : ", req.body)
         let { customerDriverLicense, customerIdCard, customerFacebook } = { ...req.files };
         let fileNameCustomerIdCard = await utility.file.genFileName(customerIdCard)
         let fileNameCustomerDriverLicense = await utility.file.genFileName(customerDriverLicense)
@@ -18,6 +18,7 @@ let customer = {
             customerDriverLicense: fileNameCustomerDriverLicense[0],
             customerFacebook: fileNameCustomerFacebook[0]
         }
+        console.log("customer : ", customer)
         return await model.CUSTOMER.create(customer).then((res) => {
             utility.file.saveFile(res.customerDriverLicense, customerDriverLicense)
             utility.file.saveFile(res.customerIdCard, customerIdCard)

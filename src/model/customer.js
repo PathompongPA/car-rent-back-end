@@ -20,7 +20,8 @@ const CUSTOMER = sequelize.define("customers", {
         type: DataTypes.STRING()
     },
     customerPhone: {
-        type: DataTypes.STRING()
+        type: DataTypes.STRING(),
+        unique: true
     },
     customerFacebook: {
         type: DataTypes.STRING()

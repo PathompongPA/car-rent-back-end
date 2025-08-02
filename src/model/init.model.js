@@ -15,14 +15,14 @@ let dbPort = process.env.DB_PORT || 3306
 //     dbPort = dbPort
 // }
 
-const initSql = mysql.createConnection(
-    {
-        host: hostName,
-        port: dbPort,
-        user: dbUser,
-        password: dbPassword,
-    }
-)
+// const initSql = mysql.createConnection(
+//     {
+//         host: hostName,
+//         port: dbPort,
+//         user: dbUser,
+//         password: dbPassword,
+//     }
+// )
 
 const sequelize = new Sequelize(
     dbName, dbUser, dbPassword,
@@ -64,7 +64,7 @@ async function createDatabase() {
 
 module.exports = {
     sequelize,
-    initSql,
+    // initSql,
     dropDatabase,
     createDatabase
 }

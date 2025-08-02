@@ -8,7 +8,8 @@ const USER = sequelize.define("user", {
         defaultValue: DataTypes.UUIDV4()
     },
     userName: {
-        type: DataTypes.STRING()
+        type: DataTypes.STRING(),
+        unique: true
     },
     password: {
         type: DataTypes.STRING()
