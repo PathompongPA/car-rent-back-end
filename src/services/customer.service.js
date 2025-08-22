@@ -5,7 +5,6 @@ const utility = require("../utility");
 let customer = {
     create: async (req) => {
         let { customerName, customerLastName, customerPhone } = { ...req.body };
-        console.log("body : ", req.body)
         let { customerDriverLicense, customerIdCard, customerFacebook } = { ...req.files };
         let fileNameCustomerIdCard = await utility.file.genFileName(customerIdCard)
         let fileNameCustomerDriverLicense = await utility.file.genFileName(customerDriverLicense)
@@ -18,7 +17,6 @@ let customer = {
             customerDriverLicense: fileNameCustomerDriverLicense[0],
             customerFacebook: fileNameCustomerFacebook[0]
         }
-        console.log("customer : ", customer)
         return await model.CUSTOMER.create(customer).then((res) => {
             utility.file.saveFile(res.customerDriverLicense, customerDriverLicense)
             utility.file.saveFile(res.customerIdCard, customerIdCard)
@@ -34,7 +32,7 @@ let customer = {
                 attributes: { exclude: ['createdAt', 'updatedAt'] },
             })
                 .then((res) => {
-                    const baseUrl = `http://${req.hostname}:${process.env.APP_PORT}/uploads/`;
+                    const baseUrl = `http://${req.hostname}/uploads/`;
                     return res.map((item) => {
                         const plainItem = item.get({ plain: true });
                         return {

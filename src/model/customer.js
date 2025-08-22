@@ -26,6 +26,10 @@ const CUSTOMER = sequelize.define("customers", {
     customerFacebook: {
         type: DataTypes.STRING()
     },
+    isDelete: {
+        type: DataTypes.BOOLEAN(),
+        defaultValue: false
+    }
 })
 
 module.exports = {

@@ -1,6 +1,6 @@
+const { Sequelize } = require("sequelize");
 const model = require("../model")
 const utility = require("../utility")
-const dayjs = require('dayjs');
 const customer = require("./customer.service");
 
 const booking = {
@@ -21,18 +21,32 @@ const booking = {
     },
     read: async (req) => {
         const bookings = await model.BOOKING.findAll({
-            attributes: { exclude: ["carId", "customerId"] },
             include: [
                 {
                     model: model.CAR,
-                    attributes: ['carName', "id"]
-
+                    include: [{ model: model.BRAND }]
                 },
-                { model: model.CUSTOMER }
+                { model: model.CUSTOMER },
+                // { model: model.BRAND },
+            ],
+            attributes: [
+                "id",
+                "isDelete",
+                "checkInDate",
+                "checkOutDate",
+                "note",
+                "slip",
+                [Sequelize.col("car.id"), "carId"],
+                [Sequelize.col("car.carName"), "carName"],
+                [Sequelize.col("customer.id"), "customerId"],
+                [Sequelize.col("customer.customerName"), "customerName"],
+                [Sequelize.col("customer.customerLastName"), "customerLastName"],
+                "createdAt",
+                "updatedAt"
             ],
         }).then(
             (res) => {
-                const baseUrl = `http://${req.hostname}:${process.env.APP_PORT}/uploads/`;
+                const baseUrl = `http://${req.hostname}/uploads/`;
                 return res.length === 0 ? [] : res.map((item) => {
                     const plainItem = item.get({ plain: true });
                     return {
@@ -65,7 +79,7 @@ const booking = {
 
         let brand = await model.BRAND.findOne(
             {
-                where: { id: body.id },
+                where: { id: body.id, isDelete: false },
                 attributes: { exclude: ['createdAt', 'updatedAt', "isDelete"] }
             }
         )
@@ -89,16 +103,19 @@ const booking = {
     delete: async (req) => {
         console.log("body  : ", req.body)
         const result = await model.BOOKING.findOne({ where: req.body })
+        console.log(result)
+        result.isDelete = true
+        await result.save()
         // let fileName = result.brandImg
         // utility.file.deleteFile(fileName)
-        await result.destroy()
+        // await result.destroy()
     }
 }
 
 module.exports = booking
 
 function genUrlImage(item) {
-    const baseUrl = `http://${process.env.SERVER_IP}:9999/uploads`;
+    const baseUrl = `http://${process.env.SERVER_IP}/uploads`;
     const data = item.toJSON()
     return { ...data, brandImg: [`${baseUrl}/${data.brandImg}`] }
 }

@@ -22,8 +22,6 @@ const user = {
                     "token",
                     jwt.sign(userInDb.id, process.env.SECRET),
                     {
-                        // httpOnly: true,
-                        // secure: true,
                         sameSite: 'lax',
                         maxAge: 1000 * 60 * 60 * 4,
                     }

@@ -36,6 +36,7 @@ let car = {
                 {
                     model: model.OFFER,
                     attributes: ["id", "offerPrice", "offerAmountDay"],
+                    where: { isDelete: false },
                     separate: true,
                     order: [["offerAmountDay", "ASC"]]
                 },
@@ -44,12 +45,14 @@ let car = {
                 },
                 {
                     model: model.BOOKING,
+                    where: { isDelete: false },
+                    separate: true,
                     attributes: ["checkInDate", "checkOutDate"]
                 }
             ]
         })
             .then((res) => {
-                const baseUrl = `http://${req.hostname}:${process.env.APP_PORT}/uploads/`;
+                const baseUrl = `http://${req.hostname}/uploads/`;
                 return res.length === 0 ? [] : res.map((item) => {
                     const plainItem = item.get({ plain: true });
                     return {

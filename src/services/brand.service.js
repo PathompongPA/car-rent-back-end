@@ -18,12 +18,38 @@ const brand = {
         let result = await model.BRAND.findAll({
             where: { isDelete: false },
             attributes: { exclude: ['createdAt', 'updatedAt', "isDelete"] },
-            order: [["brandName", "ASC"]]
+            order: [["brandName", "ASC"]],
+            include: [
+                {
+                    model: model.CAR,
+                    attributes: [],
+                    required: true
+                }
+            ]
         })
             .then((res) => {
                 return res.map(
                     (item) => {
-                        const baseUrl = `http://${req.hostname}:${process.env.APP_PORT}/uploads`;
+                        const baseUrl = `http://${req.hostname}/uploads`;
+                        const data = item.toJSON()
+                        return { ...data, brandImg: [`${baseUrl}/${data.brandImg}`] }
+                    }
+                )
+            })
+
+        return result
+    },
+
+    readAll: async (req) => {
+        let result = await model.BRAND.findAll({
+            where: { isDelete: false },
+            attributes: { exclude: ['createdAt', 'updatedAt', "isDelete"] },
+            order: [["brandName", "ASC"]],
+        })
+            .then((res) => {
+                return res.map(
+                    (item) => {
+                        const baseUrl = `http://${req.hostname}/uploads`;
                         const data = item.toJSON()
                         return { ...data, brandImg: [`${baseUrl}/${data.brandImg}`] }
                     }
@@ -61,11 +87,10 @@ const brand = {
     },
 
     delete: async (req) => {
-        console.log(req.body)
-        const result = await model.BRAND.findOne({ where: req.body })
-        let fileName = result.brandImg
-        utility.file.deleteFile(fileName)
-        await result.destroy()
+        return await model.BRAND.update({ isDelete: true }, { where: req.body })
+        // let fileName = result.brandImg
+        // utility.file.deleteFile(fileName)
+        // await result.destroy()
 
     }
 }

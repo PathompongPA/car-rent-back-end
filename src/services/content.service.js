@@ -40,7 +40,7 @@ const content = {
 
     },
     read: async (req) => {
-        const baseUrl = `http://${req.hostname}:${process.env.APP_PORT}/uploads/`;
+        const baseUrl = `http://${req.hostname}/uploads/`;
         return await model.CONTENT.findAll({ attributes: { exclude: ['createdAt', 'updatedAt'] } }).then((item) => {
             let res = [...JSON.parse(JSON.stringify(item))];
 

@@ -17,6 +17,9 @@ const USER = sequelize.define("user", {
     last_login: {
         type: DataTypes.DATE(),
         // defaultValue: DataTypes.DATE()
+    },
+    role: {
+        type: DataTypes.STRING(),
     }
 })
 

@@ -10,6 +10,15 @@ const brand = {
         }
     },
 
+    ReadAll: async (req, res) => {
+        try {
+            res.success(await services.brand.readAll(req))
+        } catch (error) {
+            res.fail(error.message)
+        }
+
+    },
+
     Read: async (req, res) => {
         try {
             res.success(await services.brand.read(req))
