@@ -15,7 +15,7 @@ const file = {
     saveFile: (_fileNames = [], _files = []) => {
         if (Array.isArray(_fileNames) & Array.isArray(_files)) {
             for (let index = 0; index < _files.length; index++) {
-                const uploadDir = path.join(__dirname, '../../uploads');
+                const uploadDir = path.join(__dirname, '../../../uploads');
                 let file = _files[index]
                 let fileName = _fileNames[index]
 
@@ -53,7 +53,7 @@ const file = {
                     console.warn(`deleteFile: invalid filename: ${fileName}`);
                     return;
                 }
-                const filePath = path.join(__dirname, '../../uploads', filename);
+                const filePath = path.join(__dirname, '../../../uploads', filename);
                 if (fs.existsSync(filePath)) {
                     fs.unlinkSync(filePath);
                     console.log(`Deleted: ${filename}`);

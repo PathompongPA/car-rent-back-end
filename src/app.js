@@ -7,7 +7,7 @@ const router = require('./routers');
 const middleware = require('./middlewares');
 const { getFacebookReviews } = require('./utility');
 
-const uploadsPath = path.resolve(__dirname, '../uploads');
+const uploadsPath = path.resolve(__dirname, '../../uploads');
 const wwwPath = path.resolve(__dirname, '../src/www/car-rent-front-end');
 
 const app = express();
