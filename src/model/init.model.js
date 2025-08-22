@@ -2,27 +2,11 @@ const { Sequelize } = require("sequelize")
 const mysql = require('mysql2');
 require('dotenv').config()
 
-let dbUser = process.env.DB_USER || "kiatpaisan"
-let dbPassword = process.env.DB_PASSWORD || "admin123456"
-let hostName = process.env.DB_HOST_NAME_DEV || "localhost"
-let dbName = process.env.DB_NAME || "demo"
-let dbPort = process.env.DB_PORT || 3306
-
-// console.log("mod :  ", process.env.MODE);
-// if (process.env.MODE === "production") {
-//     hostName = 'localhost'
-//     dbName = process.env.DB_NAME
-//     dbPort = dbPort
-// }
-
-// const initSql = mysql.createConnection(
-//     {
-//         host: hostName,
-//         port: dbPort,
-//         user: dbUser,
-//         password: dbPassword,
-//     }
-// )
+let dbUser = process.env.DB_USER
+let dbPassword = process.env.DB_PASSWORD
+let hostName = process.env.DB_HOST_NAME_DEV
+let dbName = process.env.DB_NAME
+let dbPort = process.env.DB_PORT
 
 const sequelize = new Sequelize(
     dbName, dbUser, dbPassword,
@@ -64,7 +48,6 @@ async function createDatabase() {
 
 module.exports = {
     sequelize,
-    // initSql,
     dropDatabase,
     createDatabase
 }
