@@ -2,3 +2,6 @@
 /src/node_modules*
 .env
 /uploads/*
+ecosystem.config.js
+/src/www/*
+/src/dist/*
