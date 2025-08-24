@@ -13,10 +13,10 @@ async function validationPassword(hashPassword, password) {
 const user = {
     login:
         async (req, res) => {
-            const { password } = req.body;
-            let response = { isLogin: false, msg: "login fail, user or password wrong" }
-            let userInDb = await model.USER.findOne({ where: { userName: "admin" } })
-            let isPasswordValid = await validationPassword(userInDb.password, password)
+            const { userName, password } = req.body;
+            let response = { isLogin: false, msg: "login ไม่สำเร็จ < user name หรือ password ผิด>" }
+            let userInDb = await model.USER.findOne({ where: { userName: userName } })
+            let isPasswordValid = userInDb && await validationPassword(userInDb.password, password)
             if (isPasswordValid) {
                 res.cookie(
                     "token",
