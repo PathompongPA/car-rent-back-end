@@ -17,14 +17,19 @@ let customer = {
             customerDriverLicense: fileNameCustomerDriverLicense[0],
             customerFacebook: fileNameCustomerFacebook[0]
         }
-        return await model.CUSTOMER.create(customer).then((res) => {
-            utility.file.saveFile(res.customerDriverLicense, customerDriverLicense)
-            utility.file.saveFile(res.customerIdCard, customerIdCard)
-            utility.file.saveFile(res.customerFacebook, customerFacebook)
-            return res
+        return await model.CUSTOMER.create(customer).then((result) => {
+            utility.file.saveFile(result.customerDriverLicense, customerDriverLicense)
+            utility.file.saveFile(result.customerIdCard, customerIdCard)
+            utility.file.saveFile(result.customerFacebook, customerFacebook)
+            return result
         })
     },
 
+    /**
+     * 
+     * @param {import('express').Request} req 
+     * @returns 
+     */
     read: async (req) => {
         return await
             model.CUSTOMER.findAll({
@@ -32,7 +37,7 @@ let customer = {
                 attributes: { exclude: ['createdAt', 'updatedAt'] },
             })
                 .then((res) => {
-                    const baseUrl = `http://${req.hostname}/uploads/`;
+                    const baseUrl = `${req.protocol}://${req.hostname}/uploads/`;
                     return res.map((item) => {
                         const plainItem = item.get({ plain: true });
                         return {

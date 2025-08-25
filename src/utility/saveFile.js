@@ -30,7 +30,7 @@ const file = {
                 fs.writeFileSync(filePath, file.buffer);
             }
         } else {
-            const uploadDir = path.join(__dirname, '../../uploads');
+            const uploadDir = path.join(__dirname, '../../../uploads');
             let file = _files[0]
             let fileName = _fileNames
 
@@ -66,7 +66,7 @@ const file = {
                 console.warn(`deleteFile: invalid filename: ${fileName}`);
                 return;
             }
-            const filePath = path.join(__dirname, '../../uploads', filesName);
+            const filePath = path.join(__dirname, '../../../uploads', filesName);
             if (fs.existsSync(filePath)) {
                 fs.unlinkSync(filePath);
                 console.log(`Deleted: ${filesName}`);
