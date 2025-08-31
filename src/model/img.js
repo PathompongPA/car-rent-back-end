@@ -10,6 +10,9 @@ const IMG = sequelize.define('Img', {
     name: {
         type: DataTypes.STRING(100),
     },
+    index: {
+        type: DataTypes.INTEGER(),
+    }
 })
 
 module.exports = {

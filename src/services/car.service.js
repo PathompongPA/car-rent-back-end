@@ -1,13 +1,18 @@
 require('dotenv');
+const { Op } = require('sequelize');
 const model = require("../model");
 const utility = require("../utility");
 const dayjs = require('dayjs');
 
 let car = {
+
     create: async (req) => {
         let { carName, brandId, carDescription, offer } = { ...req.body };
+
         let { carImage, carThumbnail } = req.files;
+
         let fileThumbnail = carThumbnail
+        console.log("car Image : ", carImage)
         carThumbnail = await utility.file.genFileName(carThumbnail)
         utility.file.saveFile(carThumbnail, fileThumbnail)
         let car = { carName, brandId, carDescription, carThumbnail: carThumbnail[0] }
@@ -18,12 +23,13 @@ let car = {
                         let carId = _res.id
                         let images = await utility.file.genFileName(carImage)
                         let arrImage = mapForeignKeyImage(images, carId)
-                        let arrOffer = mapForeignKey(JSON.parse(offer), carId)
+                        let arrOffer = mapForeignKeyOffer(JSON.parse(offer), carId)
                         await model.IMG.bulkCreate(arrImage)
                         await model.OFFER.bulkCreate(arrOffer)
                         utility.file.saveFile(images, carImage)
                     })
     },
+
     read: async (req) => {
         let car = await model.CAR.findAll({
             order: [["carName", "ASC"]],
@@ -31,7 +37,9 @@ let car = {
             include: [
                 {
                     model: model.IMG,
-                    attributes: ["name"]
+                    attributes: ["name"],
+                    separate: true,
+                    order: [["index", "ASC"]]
                 },
                 {
                     model: model.OFFER,
@@ -53,48 +61,71 @@ let car = {
         })
             .then((res) => {
                 const baseUrl = `http://${req.hostname}/uploads/`;
-                return res.length === 0 ? [] : res.map((item) => {
+                let isEmpty = res.length === 0
+                return isEmpty ? [] : res.map((item) => {
                     const plainItem = item.get({ plain: true });
                     return {
                         ...plainItem,
                         carThumbnail: baseUrl + item.carThumbnail,
-                        Imgs: item.Imgs.map((res) => baseUrl + res.name)
+                        Imgs: item.Imgs.map((res) => {
+                            return baseUrl + res.name
+                            // return {
+                            //     "url": baseUrl + res.name,
+                            //     "index": res.index
+                            // }
+                        }
+
+                        ),
                     };
                 });
             });
 
-        car.forEach((res) => {
-            let arrayBooking = [];
-            res.bookings.forEach(({ checkInDate, checkOutDate }) => {
-                const checkIn = dayjs(checkInDate);
-                const checkOut = dayjs(checkOutDate);
-                let day = checkIn;
-                while (day.isBefore(checkOut) || day.isSame(checkOut)) {
-                    arrayBooking.push(day.format("YYYY-MM-DD"));
-                    day = day.add(1, "day");
-                }
+        car.forEach(
+            (res) => {
+                let arrayBooking = [];
+                res.bookings.forEach(({ checkInDate, checkOutDate }) => {
+                    const checkIn = dayjs(checkInDate);
+                    const checkOut = dayjs(checkOutDate);
+                    let day = checkIn;
+                    while (day.isBefore(checkOut) || day.isSame(checkOut)) {
+                        arrayBooking.push(day.format("YYYY-MM-DD"));
+                        day = day.add(1, "day");
+                    }
+                });
+                res.bookedDates = arrayBooking;
+                res.Imgs.sort((a, b) => a.index - b.index);
             });
-
-            res.bookedDates = arrayBooking;
-        });
-
         return car;
     },
 
+    Hide: async (req) => {
+        const { id, isDelete } = req.body;
+        let newData = { isDelete: isDelete }
+        return await model.CAR.update(newData, { where: { id: id } })
+    },
+
     update: async (req) => {
+        // async function filterNewUploads(files) {
+        //     let fileNames = files.map(f => f.originalname);
+        //     let existing = await model.IMG.findAll({
+        //         where: { name: { [Op.in]: fileNames } },
+        //         attributes: ["name"]
+        //     });
+        //     let existingNames = existing.map(f => f.fileName);
+        //     let newFiles = files.filter(f => !existingNames.includes(f.originalname));
+        //     return newFiles;
+        // }
+        // let newFiles = await filterNewUploads(req.files.carImage);
+
         let { carName, brandId, carDescription, offer, id } = { ...req.body };
         let { carThumbnail, carImage } = { ...req.files }
         let car = { carName, brandId, carDescription, }
-        console.log("file : ", carThumbnail, carImage)
+        console.log(carImage)
 
-        let isUpdateCarImage = carImage !== undefined
         let isUpdateCarThumbnail = carThumbnail !== undefined
 
-
-        if (isUpdateCarImage) {
-            await deleteOldCarImage(id)
-            await saveNewCarImage(id, carImage)
-        }
+        await deleteOldCarImage(id)
+        await saveNewCarImage(id, carImage)
 
         if (isUpdateCarThumbnail) {
             let fileName = await utility.file.genFileName(carThumbnail)
@@ -119,12 +150,12 @@ let car = {
 }
 module.exports = car
 
-function mapForeignKey(array, key) {
+function mapForeignKeyOffer(array, key) {
     return array.map(item => ({ ...item, "carId": key }))
 }
 
 function mapForeignKeyImage(array, key) {
-    return array.map(item => ({ "name": item, "carId": key }))
+    return array.map(item => ({ "name": item, "carId": key, "index": array.indexOf(item) }))
 }
 
 async function deleteOldCarImage(id) {
@@ -136,7 +167,7 @@ async function deleteOldCarImage(id) {
 async function saveNewCarImage(_idCar, _carImage) {
     let fileName = await utility.file.genFileName(_carImage)
     utility.file.saveFile(fileName, _carImage)
-    let newImg = fileName.map((img) => { return { name: img, carId: _idCar } })
+    let newImg = fileName.map((img, index) => { return { name: img, carId: _idCar, index: index } })
     await model.IMG.bulkCreate(newImg)
 }
 

@@ -18,6 +18,11 @@ const car = require('express').Router()
         controller.car.Create
     )
 
+    .post(
+        "/hide",
+        controller.car.Hide
+    )
+
     .put(
         "/",
         middleware.verifyUser,

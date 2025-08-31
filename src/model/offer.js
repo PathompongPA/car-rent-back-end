@@ -11,7 +11,7 @@ const OFFER = sequelize.define("offers", {
         type: DataTypes.INTEGER()
     },
     offerAmountDay: {
-        type: DataTypes.INTEGER()
+        type: DataTypes.STRING()
     },
     isDelete: {
         type: DataTypes.BOOLEAN(),

@@ -27,6 +27,14 @@ async function Update(req, res) {
     //     res.fail(error.message)
     // }
 }
+async function Hide(req, res) {
+    try {
+        res.success(await services.car.Hide(req))
+    } catch (error) {
+        res.fail(error.message)
+    }
+
+}
 
 async function Delete(req, res) {
     try {
@@ -40,6 +48,7 @@ const car = {
     Create,
     Read,
     Update,
+    Hide,
     Delete
 }
 
