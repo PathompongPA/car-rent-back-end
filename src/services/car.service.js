@@ -46,7 +46,7 @@ let car = {
                     attributes: ["id", "offerPrice", "offerAmountDay"],
                     where: { isDelete: false },
                     separate: true,
-                    order: [["offerAmountDay", "ASC"]]
+                    order: [["offerPrice", "DESC"]]
                 },
                 {
                     model: model.BRAND,
