@@ -61,7 +61,6 @@ let car = {
             })
                 .then((res) => {
                     const baseUrl = `${req.protocol}://${req.hostname}/uploads/`;
-                    console.log(req.ip)
                     let isEmpty = res.length === 0
                     return isEmpty ? [] : res.map((item) => {
                         const plainItem = item.get({ plain: true });

@@ -33,7 +33,7 @@ const brand = {
             .then((res) => {
                 return res.map(
                     (item) => {
-                        const baseUrl = `http://${req.hostname}/uploads`;
+                        const baseUrl = `${req.protocol}://${req.hostname}/uploads`;
                         const data = item.toJSON()
                         return { ...data, brandImg: [`${baseUrl}/${data.brandImg}`] }
                     }
@@ -59,7 +59,7 @@ const brand = {
             .then((res) => {
                 return res.map(
                     (item) => {
-                        const baseUrl = `http://${req.hostname}/uploads`;
+                        const baseUrl = `${req.protocol}://${req.hostname}/uploads`;
                         const data = item.toJSON()
                         return { ...data, brandImg: [`${baseUrl}/${data.brandImg}`] }
                     }
