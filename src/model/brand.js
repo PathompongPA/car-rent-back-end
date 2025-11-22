@@ -7,6 +7,10 @@ const BRAND = sequelize.define("brands", {
         primaryKey: true,
         defaultValue: UUIDV4()
     },
+    index: {
+        type: DataTypes.INTEGER(),
+        defaultValue: 99,
+    },
     brandName: {
         type: DataTypes.STRING(),
         unique: true

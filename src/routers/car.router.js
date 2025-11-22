@@ -33,6 +33,12 @@ const car = require('express').Router()
         controller.car.Update
     )
 
+    .put(
+        "/index",
+        middleware.verifyUser,
+        controller.car.UpdateIndex
+    )
+
     .delete("/",
         middleware.verifyUser,
         controller.car.Delete

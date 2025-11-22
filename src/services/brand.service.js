@@ -6,8 +6,10 @@ const brand = {
 
     create: async (req) => {
         const files = req.files
-
         let body = { ...req.body }
+        console.log(body)
+        console.log("body : ", body)
+        console.log("file : ", files)
         let filenames = await utility.file.genFileName(files)
         body.brandImg = filenames[0]
 
@@ -18,10 +20,11 @@ const brand = {
         let result = await model.BRAND.findAll({
             where: { isDelete: false },
             attributes: { exclude: ['createdAt', 'updatedAt', "isDelete"] },
-            order: [["brandName", "ASC"]],
+            order: [["index", "ASC"]],
             include: [
                 {
                     model: model.CAR,
+                    where: { isDelete: false },
                     attributes: [],
                     required: true
                 }
@@ -42,9 +45,16 @@ const brand = {
 
     readAll: async (req) => {
         let result = await model.BRAND.findAll({
-            where: { isDelete: false },
+            include: [
+                {
+                    model: model.CAR,
+                    required: false,
+                    where: { isDelete: false },
+                    attributes: ["id"]
+                }
+            ],
             attributes: { exclude: ['createdAt', 'updatedAt', "isDelete"] },
-            order: [["brandName", "ASC"]],
+            order: [["index", "ASC"]],
         })
             .then((res) => {
                 return res.map(
@@ -62,6 +72,8 @@ const brand = {
     update: async (req) => {
         let body = { ...req.body }
         let file = req.files
+        console.log("body : ", body)
+        console.log("file : ", file)
 
         let brand = await model.BRAND.findOne(
             {
@@ -83,7 +95,14 @@ const brand = {
                 where: { id: body.id }
             }
         )
+    },
 
+    updateIndex: async (req) => {
+        let body = { ...req.body.payload }
+        console.log(body)
+        const updatePromises = Object.values(body).map((item) => model.BRAND.update({ index: item.index }, { where: { id: item.id } }))
+        await Promise.all(updatePromises)
+        return { msg: "ลำดับยี่ห้อ" }
     },
 
     delete: async (req) => {

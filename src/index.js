@@ -7,7 +7,7 @@ let app_port = process.env.APP_PORT || 3000
 app.listen(app_port, async () => {
     try {
         // model.initSql.connect()
-        await model.sequelize.sync()
+        await model.sequelize.sync({ alter: true })
         console.log(`${dayjs()} : [Server] Server started ... `)
         console.log(`${dayjs()} : [Server] Server On Port \x1b[36m ${app_port} \x1b[0m `);
         const amountContent = await model.CONTENT.count()

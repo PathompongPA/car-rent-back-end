@@ -14,7 +14,7 @@ const user = {
     login:
         async (req, res) => {
             const { userName, password } = req.body;
-            let response = { isLogin: false, msg: "login ไม่สำเร็จ < user name หรือ password ผิด>" }
+            let response = { isLogin: false, msg: "login ไม่สำเร็จ <user name หรือ password ไม่ถูกต้อง>" }
             let userInDb = await model.USER.findOne({ where: { userName: userName } })
             let isPasswordValid = userInDb && await validationPassword(userInDb.password, password)
             if (isPasswordValid) {

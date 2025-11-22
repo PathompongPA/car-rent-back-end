@@ -8,11 +8,10 @@ let car = {
 
     create: async (req) => {
         let { carName, brandId, carDescription, offer } = { ...req.body };
-
         let { carImage, carThumbnail } = req.files;
+        console.log({ ...req.files }, { ...req.body })
 
         let fileThumbnail = carThumbnail
-        console.log("car Image : ", carImage)
         carThumbnail = await utility.file.genFileName(carThumbnail)
         utility.file.saveFile(carThumbnail, fileThumbnail)
         let car = { carName, brandId, carDescription, carThumbnail: carThumbnail[0] }
@@ -30,78 +29,80 @@ let car = {
                     })
     },
 
-    read: async (req) => {
-        let car = await model.CAR.findAll({
-            order: [["carName", "ASC"]],
-            attributes: { exclude: ['createdAt', 'updatedAt'] },
-            include: [
-                {
-                    model: model.IMG,
-                    attributes: ["name"],
-                    separate: true,
-                    order: [["index", "ASC"]]
-                },
-                {
-                    model: model.OFFER,
-                    attributes: ["id", "offerPrice", "offerAmountDay"],
-                    where: { isDelete: false },
-                    separate: true,
-                    order: [["offerPrice", "DESC"]]
-                },
-                {
-                    model: model.BRAND,
-                },
-                {
-                    model: model.BOOKING,
-                    where: { isDelete: false },
-                    separate: true,
-                    attributes: ["checkInDate", "checkOutDate"]
-                }
-            ]
-        })
-            .then((res) => {
-                const baseUrl = `${req.protocol}://${req.hostname}/uploads/`;
-                let isEmpty = res.length === 0
-                return isEmpty ? [] : res.map((item) => {
-                    const plainItem = item.get({ plain: true });
-                    return {
-                        ...plainItem,
-                        carThumbnail: baseUrl + item.carThumbnail,
-                        Imgs: item.Imgs.map((res) => {
-                            return baseUrl + res.name
-                            // return {
-                            //     "url": baseUrl + res.name,
-                            //     "index": res.index
-                            // }
-                        }
-
-                        ),
-                    };
-                });
-            });
-
-        car.forEach(
-            (res) => {
-                let arrayBooking = [];
-                res.bookings.forEach(({ checkInDate, checkOutDate }) => {
-                    const checkIn = dayjs(checkInDate);
-                    const checkOut = dayjs(checkOutDate);
-                    let day = checkIn;
-                    while (day.isBefore(checkOut) || day.isSame(checkOut)) {
-                        arrayBooking.push(day.format("YYYY-MM-DD"));
-                        day = day.add(1, "day");
+    read:
+        async (req) => {
+            let car = await model.CAR.findAll({
+                order: [["index", "ASC"]],
+                attributes: { exclude: ['createdAt', 'updatedAt'] },
+                include: [
+                    {
+                        model: model.IMG,
+                        attributes: ["name"],
+                        separate: true,
+                        order: [["index", "ASC"]]
+                    },
+                    {
+                        model: model.OFFER,
+                        attributes: ["id", "offerPrice", "offerAmountDay"],
+                        where: { isDelete: false },
+                        separate: true,
+                        order: [["offerPrice", "DESC"]]
+                    },
+                    {
+                        model: model.BRAND,
+                    },
+                    {
+                        model: model.BOOKING,
+                        where: { isDelete: false },
+                        separate: true,
+                        attributes: ["checkInDate", "checkOutDate"]
                     }
+                ]
+            })
+                .then((res) => {
+                    const baseUrl = `${req.protocol}://${req.hostname}/uploads/`;
+                    console.log(req.ip)
+                    let isEmpty = res.length === 0
+                    return isEmpty ? [] : res.map((item) => {
+                        const plainItem = item.get({ plain: true });
+                        return {
+                            ...plainItem,
+                            carThumbnail: baseUrl + item.carThumbnail,
+                            Imgs: item.Imgs.map((res) => {
+                                return baseUrl + res.name
+                                // return {
+                                //     "url": baseUrl + res.name,
+                                //     "index": res.index
+                                // }
+                            }
+
+                            ),
+                        };
+                    });
                 });
-                res.bookedDates = arrayBooking;
-                res.Imgs.sort((a, b) => a.index - b.index);
-            });
-        return car;
-    },
+
+            car.forEach(
+                (res) => {
+                    let arrayBooking = [];
+                    res.bookings.forEach(({ checkInDate, checkOutDate }) => {
+                        const checkIn = dayjs(checkInDate);
+                        const checkOut = dayjs(checkOutDate);
+                        let day = checkIn;
+                        while (day.isBefore(checkOut) || day.isSame(checkOut)) {
+                            arrayBooking.push(day.format("YYYY-MM-DD"));
+                            day = day.add(1, "day");
+                        }
+                    });
+                    res.bookedDates = arrayBooking;
+                    res.Imgs.sort((a, b) => a.index - b.index);
+                });
+            return car;
+        },
 
     Hide: async (req) => {
-        const { id, isDelete } = req.body;
-        let newData = { isDelete: isDelete }
-        return await model.CAR.update(newData, { where: { id: id } })
+        const { id } = req.body;
+        let recode = await model.CAR.findOne({ where: { id: id } })
+        return await recode.update({ isDelete: !recode.isDelete })
     },
 
     update: async (req) => {
@@ -120,9 +121,11 @@ let car = {
         let { carName, brandId, carDescription, offer, id } = { ...req.body };
         let { carThumbnail, carImage } = { ...req.files }
         let car = { carName, brandId, carDescription, }
-        console.log(carImage)
-
         let isUpdateCarThumbnail = carThumbnail !== undefined
+
+        console.log({ ...req.files })
+        console.log({ ...req.body })
+        console.log(isUpdateCarThumbnail)
 
         await deleteOldCarImage(id)
         await saveNewCarImage(id, carImage)
@@ -137,6 +140,15 @@ let car = {
 
         await model.CAR.update(car, { where: { id: id } })
         await updateOffer(id, offer)
+        return "บันทึกสำเร็จ"
+    },
+
+    updateIndex: async (req) => {
+        let body = { ...req.body.payload }
+        console.log(body)
+        const updatePromises = Object.values(body).map((item) => model.CAR.update({ index: item.index }, { where: { id: item.id } }))
+        await Promise.all(updatePromises)
+        return { msg: "ลำดับรถ" }
     },
 
     delete: async (req) => {

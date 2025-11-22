@@ -36,6 +36,14 @@ const brand = {
         }
     },
 
+    UpdateIndex: async (req, res) => {
+        try {
+            res.success(await services.brand.updateIndex(req, res))
+        } catch (error) {
+            res.fail(error.message)
+        }
+    },
+
     Delete: async (req, res) => {
         try {
             res.success(await services.brand.delete(req))

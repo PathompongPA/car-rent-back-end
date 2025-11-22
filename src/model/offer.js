@@ -8,7 +8,7 @@ const OFFER = sequelize.define("offers", {
         defaultValue: DataTypes.UUIDV4()
     },
     offerPrice: {
-        type: DataTypes.INTEGER()
+        type: DataTypes.STRING()
     },
     offerAmountDay: {
         type: DataTypes.STRING()

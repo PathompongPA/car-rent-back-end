@@ -23,6 +23,11 @@ const brand = require('express').Router()
         middleware.verifyUser,
         controller.brand.Update
     )
+    .put(
+        "/index",
+        middleware.verifyUser,
+        controller.brand.UpdateIndex
+    )
     .delete(
         "/",
         middleware.verifyUser,

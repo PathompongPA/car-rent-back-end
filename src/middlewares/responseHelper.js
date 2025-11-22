@@ -7,6 +7,7 @@ function responseHelper(req, res, next) {
     };
 
     res.fail = function (message, code = 400) {
+        console.log("msg error : ", message)
         res.status(code).json({
             isSuccess: false,
             msg: message,

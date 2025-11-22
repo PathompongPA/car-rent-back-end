@@ -24,6 +24,10 @@ const CAR = sequelize.define("cars", {
     isDelete: {
         type: DataTypes.BOOLEAN(),
         defaultValue: false
+    },
+    index: {
+        type: DataTypes.INTEGER(),
+        defaultValue: 255
     }
 })
 
