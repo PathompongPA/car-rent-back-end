@@ -33,7 +33,8 @@ const brand = {
             .then((res) => {
                 return res.map(
                     (item) => {
-                        const baseUrl = `${req.protocol}://${req.hostname}/uploads`;
+                        let protocol = req.hostname === "www.carrent88.com" ? "https" : "http"
+                        const baseUrl = `${protocol}://${req.hostname}/uploads`;
                         const data = item.toJSON()
                         return { ...data, brandImg: [`${baseUrl}/${data.brandImg}`] }
                     }
@@ -59,7 +60,8 @@ const brand = {
             .then((res) => {
                 return res.map(
                     (item) => {
-                        const baseUrl = `${req.protocol}://${req.hostname}/uploads`;
+                        let protocol = req.hostname === "www.carrent88.com" ? "https" : "http"
+                        const baseUrl = `${protocol}://${req.hostname}/uploads`;
                         const data = item.toJSON()
                         return { ...data, brandImg: [`${baseUrl}/${data.brandImg}`] }
                     }

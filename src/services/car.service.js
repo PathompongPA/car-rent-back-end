@@ -60,7 +60,9 @@ let car = {
                 ]
             })
                 .then((res) => {
-                    const baseUrl = `${req.protocol}://${req.hostname}/uploads/`;
+                    let protocol = req.hostname === "www.carrent88.com" ? "https" : "http"
+                    const baseUrl = `${protocol}://${req.hostname}/uploads/`;
+                    console.log(baseUrl)
                     let isEmpty = res.length === 0
                     return isEmpty ? [] : res.map((item) => {
                         const plainItem = item.get({ plain: true });

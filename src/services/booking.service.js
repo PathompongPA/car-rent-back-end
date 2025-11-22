@@ -46,7 +46,8 @@ const booking = {
             ],
         }).then(
             (res) => {
-                const baseUrl = `http://${req.hostname}/uploads/`;
+                let protocol = req.hostname === "www.carrent88.com" ? "https" : "http"
+                const baseUrl = `${protocol}://${req.hostname}/uploads/`;
                 return res.length === 0 ? [] : res.map((item) => {
                     const plainItem = item.get({ plain: true });
                     return {

@@ -37,7 +37,8 @@ let customer = {
                 attributes: { exclude: ['createdAt', 'updatedAt'] },
             })
                 .then((res) => {
-                    const baseUrl = `${req.protocol}://${req.hostname}/uploads/`;
+                    let protocol = req.hostname === "www.carrent88.com" ? "https" : "http"
+                    const baseUrl = `${protocol}://${req.hostname}/uploads/`;
                     return res.map((item) => {
                         const plainItem = item.get({ plain: true });
                         return {
