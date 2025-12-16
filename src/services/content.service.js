@@ -2,57 +2,36 @@ require('dotenv');
 const model = require("../model")
 const utility = require("../utility")
 
+function removeBaseUrlFrom(url) {
+    return url.split("/").at(-1)
+}
+
 const content = {
 
     create: async (req) => {
         let data = JSON.parse(req.body.data)
-        // console.log(req.files)
         let { logo, viewBoard } = { ...req.files }
-        let newData = [...data]
-        console.log(viewBoard)
-
-        let fileNameLogo = await utility.file.genFileName(logo)
-        utility.file.saveFile(fileNameLogo, logo)
-
-        let fileNameViewBoard = await utility.file.genFileName(viewBoard)
-        utility.file.saveFile(fileNameViewBoard, viewBoard)
-
-        if (logo !== undefined) {
-            newData[5].value.image = fileNameLogo[0]
-        } else {
-            newData[5].value.image = newData[5].value.image.split("/").at(-1)
-        }
-        if (viewBoard !== undefined) {
-            newData[9].value = newData[9]?.value.map(item => { return item.split("/").at(-1) })
-            newData[9].value = data[9].value.concat(fileNameViewBoard)
-        } else {
-            newData[9].value = newData[9].value.map(item => { return item.split("/").at(-1) })
-            console.log(newData[9].value)
-        }
-        await Promise.all(
-            newData.map((item) => {
-                model.CONTENT.update(
-                    { value: item.value },
-                    { where: { id: item.id } }
-                )
-            })
-        )
+        let fileNameLogo = await utility.file.genFileName(logo); utility.file.saveFile(fileNameLogo, logo)
+        let fileNameViewBoard = await utility.file.genFileName(viewBoard); utility.file.saveFile(fileNameViewBoard, viewBoard)
+        let newData = [...data].map(({ id, value }) => {
+            if (id === "logo") value = !logo ? removeBaseUrlFrom(value) : fileNameLogo
+            if (id === "viewBoard.image") value = value.map((image) => removeBaseUrlFrom(image))
+            if (id === "viewBoard.image" && viewBoard) value = value.concat(fileNameViewBoard)
+            return { id, value }
+        })
+        await Promise.all(newData.map((item) => { model.CONTENT.upsert(item) }))
+        return { msg: "create success." }
 
     },
     read: async (req) => {
         let protocol = req.hostname === "www.carrent88.com" ? "https" : "http"
         const baseUrl = `${protocol}://${req.hostname}/uploads/`;
         return await model.CONTENT.findAll({ attributes: { exclude: ['createdAt', 'updatedAt'] } }).then((item) => {
-            let res = [...JSON.parse(JSON.stringify(item))];
-
-            // if (res[5]?.value?.image) {
-            res[5].value.image = baseUrl + res[5].value.image;
-            // }
-
-            if (Array.isArray(res[9]?.value)) {
-                res[9].value = res[9].value.map(viewBoard => baseUrl + viewBoard);
-            }
-
+            let res = [...JSON.parse(JSON.stringify(item))].map(({ id, value }) => {
+                if (id === "viewBoard.image") value = value.map((image) => baseUrl + image)
+                if (id === "logo") value = baseUrl + value;
+                return { id, value }
+            });
             return res;
         })
     },
