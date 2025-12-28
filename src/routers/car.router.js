@@ -17,6 +17,18 @@ const car = require('express').Router()
         ]),
         controller.car.Create
     )
+    .post(
+        "/image",
+        middleware.verifyUser,
+        middleware.fileUpload.fields([{ name: "image", },]),
+        controller.car.addImage
+    )
+    .post(
+        "/thumbnail",
+        middleware.verifyUser,
+        middleware.fileUpload.fields([{ name: "thumbnail", },]),
+        controller.car.addThumbnail
+    )
 
     .post(
         "/hide",
@@ -26,10 +38,6 @@ const car = require('express').Router()
     .put(
         "/",
         middleware.verifyUser,
-        middleware.fileUpload.fields([
-            { name: "carImage", },
-            { name: "carThumbnail" }
-        ]),
         controller.car.Update
     )
 
@@ -42,6 +50,10 @@ const car = require('express').Router()
     .delete("/",
         middleware.verifyUser,
         controller.car.Delete
+    )
+    .delete("/image",
+        middleware.verifyUser,
+        controller.car.DeleteImage
     )
 
 module.exports = car

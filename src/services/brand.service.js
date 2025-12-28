@@ -63,7 +63,7 @@ const brand = {
                         let protocol = req.hostname === "www.carrent88.com" ? "https" : "http"
                         const baseUrl = `${protocol}://${req.hostname}/uploads`;
                         const data = item.toJSON()
-                        return { ...data, brandImg: [`${baseUrl}/${data.brandImg}`] }
+                        return { ...data, brandImg: `${baseUrl}/${data.brandImg}` }
                     }
                 )
             })
@@ -74,8 +74,6 @@ const brand = {
     update: async (req) => {
         let body = { ...req.body }
         let file = req.files
-        console.log("body : ", body)
-        console.log("file : ", file)
 
         let brand = await model.BRAND.findOne(
             {
@@ -101,7 +99,7 @@ const brand = {
 
     updateIndex: async (req) => {
         let body = { ...req.body.payload }
-        console.log(body)
+        console.log("body : ", body)
         const updatePromises = Object.values(body).map((item) => model.BRAND.update({ index: item.index }, { where: { id: item.id } }))
         await Promise.all(updatePromises)
         return { msg: "ลำดับยี่ห้อ" }

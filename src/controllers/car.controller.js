@@ -19,15 +19,31 @@ const car = {
         try {
             res.success(await services.car.read(req))
         } catch (error) {
-            res.fail(error.message)
+            res.fail(error)
         }
     },
 
+    addImage: async function (req, res) {
+        try {
+            res.success(await services.car.addImage(req))
+        } catch (error) {
+            res.fail(error)
+        }
+
+    },
+    addThumbnail: async function (req, res) {
+        try {
+            res.success(await services.car.addThumbnail(req))
+        } catch (error) {
+            res.fail(error)
+        }
+
+    },
     Update: async function (req, res) {
         try {
             res.success(await services.car.update(req))
         } catch (error) {
-            res.fail(error.name)
+            res.fail(error)
         }
     },
 
@@ -35,7 +51,7 @@ const car = {
         try {
             res.success(await services.car.updateIndex(req))
         } catch (error) {
-            res.fail(error.name)
+            res.fail(error)
         }
     },
 
@@ -43,7 +59,7 @@ const car = {
         try {
             res.success(await services.car.Hide(req))
         } catch (error) {
-            res.fail(error.message)
+            res.fail(error)
         }
     },
 
@@ -51,7 +67,14 @@ const car = {
         try {
             res.success(await services.car.delete(req))
         } catch (error) {
-            res.fail(error.message)
+            res.fail(error)
+        }
+    },
+    DeleteImage: async function (req, res) {
+        try {
+            res.success(await services.car.deleteImage(req))
+        } catch (error) {
+            res.fail(error)
         }
     }
 }

@@ -58,7 +58,7 @@ const file = {
                     fs.unlinkSync(filePath);
                     console.log(`Deleted: ${filename}`);
                 } else {
-                    console.warn(`deleteFile: file not found: ${fileName}`);
+                    // console.warn(`deleteFile: file not found: ${fileName}`);
                 }
             }
         } else {

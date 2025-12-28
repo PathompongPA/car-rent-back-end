@@ -3,6 +3,7 @@ const brand = require("./brand.controller");
 const car = require("./car.controller");
 const content = require("./content.controller");
 const customer = require("./customer.controller");
+const offer = require("./offer.controller");
 const user = require("./user.controller");
 const controller = {
     car,
@@ -10,7 +11,8 @@ const controller = {
     customer,
     booking,
     content,
-    user
+    user,
+    offer
 
 }
 module.exports = controller
