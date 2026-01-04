@@ -15,7 +15,6 @@ const CAR = sequelize.define("cars", {
 
     carDescription: {
         type: DataTypes.TEXT("long"),
-        defaultValue: "this is description demo"
     },
     carThumbnail: {
         type: DataTypes.STRING(),

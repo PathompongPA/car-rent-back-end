@@ -1,5 +1,4 @@
 require('dotenv');
-const { Op, Sequelize } = require('sequelize');
 const model = require("../model");
 const utility = require("../utility");
 const dayjs = require('dayjs');
@@ -9,26 +8,17 @@ const { saveFile, genFileName, deleteFile } = require('../utility/saveFile');
 let car = {
 
     create: async (req) => {
-        let { carName, brandId, carDescription, offer } = { ...req.body };
-        let { carImage, carThumbnail } = req.files;
-        console.log({ ...req.files }, { ...req.body })
-
-        let fileThumbnail = carThumbnail
-        carThumbnail = await utility.file.genFileName(carThumbnail)
-        utility.file.saveFile(carThumbnail, fileThumbnail)
-        let car = { carName, brandId, carDescription, carThumbnail: carThumbnail[0] }
-        return await
-            model.CAR.create(car)
-                .then(
-                    async (_res) => {
-                        let carId = _res.id
-                        let images = await utility.file.genFileName(carImage)
-                        let arrImage = mapForeignKeyImage(images, carId)
-                        let arrOffer = mapForeignKeyOffer(JSON.parse(offer), carId)
-                        await model.IMG.bulkCreate(arrImage)
-                        await model.OFFER.bulkCreate(arrOffer)
-                        utility.file.saveFile(images, carImage)
-                    })
+        let { carName, brandId } = { ...req.body };
+        let { carThumbnail } = req.files;
+        let thumbnail = carThumbnail
+        fileName = await utility.file.genFileName(carThumbnail)
+        utility.file.saveFile(fileName, thumbnail)
+        let car = {
+            "carName": carName,
+            "brandId": brandId,
+            "carThumbnail": fileName[0]
+        }
+        await model.CAR.create(car)
     },
     addImage: async (req) => {
         const { image } = { ...req.files };

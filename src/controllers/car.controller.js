@@ -6,15 +6,9 @@ const car = {
         try {
             res.success(await services.car.create(req))
         } catch (error) {
-            console.log(error)
-            res.fail(error.message)
+            res.fail(error)
         }
     },
-    /**
-     * 
-     * @param {import("express").Request} req 
-     * @param {*} res 
-     */
     Read: async function (req, res) {
         try {
             res.success(await services.car.read(req))
