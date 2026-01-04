@@ -16,7 +16,8 @@ let car = {
         let car = {
             "carName": carName,
             "brandId": brandId,
-            "carThumbnail": fileName[0]
+            "carThumbnail": fileName[0],
+            "index": -1
         }
         await model.CAR.create(car)
     },
