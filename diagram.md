@@ -29,8 +29,6 @@ payment{
     bookingId uuid fk
     date date
     slip string
-    amount int
-    คนรับตัง int
 }
 
 booking{
@@ -40,15 +38,20 @@ booking{
     checkInDate date
     checkOutDate date
 }
+
+model {
+    id uuid pk
+    brandId uuid fk
+    type  string
+}
+
 car{
     carId uuid pk
-    brandId uuid fk
+    modal string fk
     name string
     description string
-    pricePerDay number
-    pricePerWeek number
-    pricePerMonth number
 }
+
 img{
     imgId uuid pk
     carId uuid fk
@@ -66,10 +69,11 @@ infoWeb{
 
 car ||--|{ booking : has
 customer ||--|{ booking: has
-car ||--|{ img : has
+model ||--|{ img : has
 infoWeb ||--|{ blog :has
-brand ||--|{ car :has
+brand ||--|{ model:has
 booking ||--|{ payment : has
 paymentType ||--|{ payment: has
 car||--|{ offer:has
+model||--|{ car:has
 ```

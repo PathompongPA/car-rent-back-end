@@ -5,7 +5,7 @@ const customer = {
         try {
             res.success(await services.customer.create(req))
         } catch (error) {
-            res.fail(error.message)
+            res.fail(error)
         }
     },
 
@@ -13,7 +13,7 @@ const customer = {
         try {
             res.success(await services.customer.read(req))
         } catch (error) {
-            res.fail(error.message)
+            res.fail(error)
         }
     },
 
@@ -21,7 +21,7 @@ const customer = {
         try {
             res.success(await services.customer.update(req))
         } catch (error) {
-            res.fail(error.message)
+            res.fail(error)
         }
     },
 
@@ -29,7 +29,7 @@ const customer = {
         try {
             res.success(await services.customer.delete(req))
         } catch (error) {
-            res.fail(error.message)
+            res.fail(error)
         }
     }
 

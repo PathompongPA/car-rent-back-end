@@ -16,6 +16,30 @@ const content = require('express').Router()
         ]),
         controller.content.Create
     )
+    .get("/viewBoard", controller.content.viewBoard.read)
+    .post(
+        "/view-board",
+        middleware.verifyUser,
+        middleware.fileUpload.fields([{ name: "viewBoard" },]),
+        controller.content.viewBoard.update
+    )
+    .delete(
+        "/view-board",
+        middleware.verifyUser,
+        controller.content.viewBoard.delete
+    )
+    .get(
+        "/logo",
+        controller.content.logo.read
+    )
+    .post(
+        "/logo",
+        middleware.verifyUser,
+        middleware.fileUpload.fields([
+            { name: "logo", },
+        ]),
+        controller.content.logo.update
+    )
     .put(
         "/",
         middleware.verifyUser,

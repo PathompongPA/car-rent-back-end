@@ -12,8 +12,8 @@ const customer = require('express').Router()
         "/",
         middleware.verifyUser,
         middleware.fileUpload.fields([
-            { name: "customerDriverLicense", },
             { name: "customerIdCard" },
+            { name: "customerDriverLicense", },
             { name: "customerFacebook" }
         ]),
         controller.customer.Create
@@ -23,8 +23,8 @@ const customer = require('express').Router()
         "/",
         middleware.verifyUser,
         middleware.fileUpload.fields([
-            { name: "customerDriverLicense", },
             { name: "customerIdCard" },
+            { name: "customerDriverLicense", },
             { name: "customerFacebook" }
         ]),
         controller.customer.Update

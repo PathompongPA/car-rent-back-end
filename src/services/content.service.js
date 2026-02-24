@@ -1,46 +1,90 @@
 require('dotenv');
-const model = require("../model")
-const utility = require("../utility")
+const { where } = require('sequelize');
+const model = require("../model");
+const { genFileName, saveFile, deleteFile } = require('../utility/saveFile');
 
-function removeBaseUrlFrom(url) {
-    return url.split("/").at(-1)
-}
 
 const content = {
-
     create: async (req) => {
-        let data = JSON.parse(req.body.data)
-        let { logo, viewBoard } = { ...req.files }
-        let fileNameLogo = await utility.file.genFileName(logo); utility.file.saveFile(fileNameLogo, logo)
-        let fileNameViewBoard = await utility.file.genFileName(viewBoard); utility.file.saveFile(fileNameViewBoard, viewBoard)
-        let newData = [...data].map(({ id, value }) => {
-            if (id === "logo") value = !logo ? removeBaseUrlFrom(value) : fileNameLogo
-            if (id === "viewBoard.image") value = value.map((image) => removeBaseUrlFrom(image))
-            if (id === "viewBoard.image" && viewBoard) value = value.concat(fileNameViewBoard)
-            return { id, value }
-        })
-        await Promise.all(newData.map((item) => { model.CONTENT.upsert(item) }))
+        await model.CONTENT.upsert({ id: "content", value: req.body.data })
         return { msg: "create success." }
 
     },
-    read: async (req) => {
-        let protocol = req.hostname === "www.carrent88.com" ? "https" : "http"
-        const baseUrl = `${protocol}://${req.hostname}/uploads/`;
-        return await model.CONTENT.findAll({ attributes: { exclude: ['createdAt', 'updatedAt'] } }).then((item) => {
-            let res = [...JSON.parse(JSON.stringify(item))].map(({ id, value }) => {
-                if (id === "viewBoard.image") value = value.map((image) => baseUrl + image)
-                if (id === "logo") value = baseUrl + value;
-                return { id, value }
-            });
-            return res;
-        })
+    read: async () => {
+        return await model.CONTENT.findOne(
+            {
+                where: { id: "content" },
+                attributes: {
+                    exclude: ['createdAt', 'updatedAt']
+                }
+            }).then(res => {
+                return res === null ? {} : res
+            })
     },
 
     update: async (req) => {
     },
 
     delete: async (req) => {
+    },
+    logo: {
+        read: async (req) => {
+            let protocol = req.hostname === "www.carrent88.com" ? "https" : "http"
+            const baseUrl = `${protocol}://${req.hostname}/uploads/`;
+            return await model.CONTENT.findAll({
+                where: { value: "logo" },
+                attributes: {
+                    exclude: ['createdAt', 'updatedAt', "value"]
+                }
+            }).then((item) => {
+                return {
+                    "logo": item.map(item => baseUrl + item.id)[0]
+                }
+            })
+        },
+        update: async (req) => {
+            let files = { ...req.files }.logo
+            let fileName = await genFileName(files)
+            await saveFile(fileName, files)
+            let oldFile = await model.CONTENT.findOne({ where: { value: "logo" } })
+            oldFile?.id && await deleteFile(oldFile.id) & oldFile.destroy()
+            await model.CONTENT.upsert({ id: fileName[0], value: "logo" },)
+            return { ...req.files }
+        },
+    },
+    viewBoard: {
+        read: async (req) => {
+            let protocol = req.hostname === "www.carrent88.com" ? "https" : "http"
+            const baseUrl = `${protocol}://${req.hostname}/uploads/`;
+            return await model.CONTENT.findAll(
+                {
+                    where: { value: "viewBoard" },
+                    attributes: {
+                        exclude: ['createdAt', 'updatedAt', "value"]
+                    }
+                }).then((item) => {
+                    return {
+                        "viewBoard": item.map(item => baseUrl + item.id)
+                    }
+                })
+        },
+        update: async (req) => {
+            let files = { ...req.files }.viewBoard
+            let fileName = await genFileName(files)
+            await saveFile(fileName, files)
+            await model.CONTENT.create({ id: fileName[0], value: "viewBoard" })
+            return { ...req.files }
+        },
+        delete: async (req) => {
+            console.log(req.body);
+            await model.CONTENT.destroy({ where: req.body }).then(async () => {
+                await deleteFile(req.body.id)
+            })
+            return { some: req.body }
+        }
     }
+    // logo: {
+    // }
 }
 
 module.exports = content

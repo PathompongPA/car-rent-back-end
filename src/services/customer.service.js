@@ -1,11 +1,13 @@
 require('dotenv');
 const model = require("../model");
 const utility = require("../utility");
+const { saveFile, genFileName, deleteFile } = require('../utility/saveFile');
 
 let customer = {
     create: async (req) => {
         let { customerName, customerLastName, customerPhone } = { ...req.body };
         let { customerDriverLicense, customerIdCard, customerFacebook } = { ...req.files };
+        console.log("file receiver : ", { ...req.files });
         let fileNameCustomerIdCard = await utility.file.genFileName(customerIdCard)
         let fileNameCustomerDriverLicense = await utility.file.genFileName(customerDriverLicense)
         let fileNameCustomerFacebook = await utility.file.genFileName(customerFacebook)
@@ -34,7 +36,7 @@ let customer = {
         return await
             model.CUSTOMER.findAll({
                 order: [["customerName", "ASC"]],
-                attributes: { exclude: ['createdAt', 'updatedAt'] },
+                // attributes: { exclude: ['createdAt', 'updatedAt'] },
             })
                 .then((res) => {
                     let protocol = req.hostname === "www.carrent88.com" ? "https" : "http"
@@ -53,38 +55,57 @@ let customer = {
     },
 
     update: async (req) => {
-
         let { id, customerName, customerLastName, customerPhone } = { ...req.body };
         let { customerDriverLicense, customerIdCard, customerFacebook } = { ...req.files };
-        let isUpdateDriverLicense = customerDriverLicense !== undefined
-        let isUpdateIdCard = customerIdCard !== undefined
-        let isUpdateFacebook = customerFacebook !== undefined
-        let customer = { customerName, customerLastName, customerPhone, }
+        let customer = { customerName, customerLastName, customerPhone }
+        console.log("customer : ", customer);
 
-        await model.CUSTOMER.findByPk(id).then(async (res) => {
-            if (isUpdateDriverLicense) {
-                let fileNameCustomerDriverLicense = await utility.file.genFileName(customerDriverLicense)
-                customer.customerDriverLicense = fileNameCustomerDriverLicense[0]
-                utility.file.deleteFile(res.customerDriverLicense)
-                utility.file.saveFile(fileNameCustomerDriverLicense, customerDriverLicense)
-            }
+        if (!id) throw new Error("customer id is required")
 
-            if (isUpdateIdCard) {
-                let fileNameCustomerIdCard = await utility.file.genFileName(customerIdCard)
-                customer.customerIdCard = fileNameCustomerIdCard[0]
-                utility.file.deleteFile(res.customerIdCard)
-                utility.file.saveFile(fileNameCustomerIdCard, customerIdCard)
-            }
+        if (customerIdCard) {
+            console.log("have id card.");
+            let fileName = await genFileName(customerIdCard);
+            saveFile(fileName, customerIdCard)
+            let oldRecord = await model.CUSTOMER.findByPk(id)
+            oldRecord.customerIdCard && deleteFile(oldRecord.customerIdCard)
+            customer.customerIdCard = fileName[0]
+        }
 
-            if (isUpdateFacebook) {
-                let fileNameCustomerFacebook = await utility.file.genFileName(customerFacebook)
-                customer.customerFacebook = fileNameCustomerFacebook[0]
-                utility.file.deleteFile(res.customerFacebook)
-                utility.file.saveFile(fileNameCustomerFacebook, customerFacebook)
-            }
-        })
+        if (customerDriverLicense) {
+            console.log("have driver license.");
+            let fileName = await genFileName(customerDriverLicense);
+            saveFile(fileName, customerDriverLicense)
+            let oldRecord = await model.CUSTOMER.findByPk(id)
+            oldRecord.customerDriverLicense && deleteFile(oldRecord.customerDriverLicense)
+            customer.customerDriverLicense = fileName[0]
+        }
 
-        return await model.CUSTOMER.update(customer, { where: { id: id } })
+        if (customerFacebook) {
+            console.log("have facebook.");
+            let fileName = await genFileName(customerFacebook);
+            saveFile(fileName, customerFacebook)
+            let oldRecord = await model.CUSTOMER.findByPk(id)
+            oldRecord.customerFacebook && deleteFile(oldRecord.customerFacebook)
+            customer.customerFacebook = fileName[0]
+        }
+
+        await model.CUSTOMER.update(customer, { where: { id: id } })
+    },
+
+    updateIdCard: async (req) => {
+        let { id } = { ...req.body };
+        const { idCard } = { ...req.files };
+        if (!id) throw new Error("customer id is required")
+
+        let fileNameCustomerIdCard = await utility.file.genFileName(idCard)
+        utility.file.saveFile(fileNameCustomerIdCard, idCard)
+
+        await model.CUSTOMER.update(
+            { customerIdCard: fileNameCustomerIdCard[0] },
+            {
+                where:
+                    { id: id }
+            })
     },
 
     delete: async (req) => {

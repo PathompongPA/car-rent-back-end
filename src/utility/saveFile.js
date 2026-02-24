@@ -28,6 +28,7 @@ const file = {
                     throw new Error('File buffer is missing. Check multer storage type.');
                 }
                 fs.writeFileSync(filePath, file.buffer);
+                console.log("saved : ", filePath);
             }
         } else {
             const uploadDir = path.join(__dirname, '../../../uploads');
@@ -43,6 +44,7 @@ const file = {
                 throw new Error('File buffer is missing. Check multer storage type.');
             }
             fs.writeFileSync(filePath, file.buffer);
+            console.log("saved : ", filePath);
         }
     },
 
@@ -56,7 +58,7 @@ const file = {
                 const filePath = path.join(__dirname, '../../../uploads', filename);
                 if (fs.existsSync(filePath)) {
                     fs.unlinkSync(filePath);
-                    console.log(`Deleted: ${filename}`);
+                    console.log(`Deleted: ${filePath}`);
                 } else {
                     // console.warn(`deleteFile: file not found: ${fileName}`);
                 }
@@ -69,7 +71,7 @@ const file = {
             const filePath = path.join(__dirname, '../../../uploads', filesName);
             if (fs.existsSync(filePath)) {
                 fs.unlinkSync(filePath);
-                console.log(`Deleted: ${filesName}`);
+                console.log(`Deleted: ${filePath}`);
             } else {
                 console.warn(`deleteFile: file not found: ${filesName}`);
             }
